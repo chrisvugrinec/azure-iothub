@@ -1,0 +1,6 @@
+SELECT
+    * 
+INTO
+    [iotdemo-output] 
+FROM
+    [iotdemo-input]

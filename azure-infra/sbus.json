@@ -1,0 +1,85 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sbus_name": {
+            "defaultValue": "sbusiothub",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ServiceBus/namespaces",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard"
+            },
+            "kind": "Messaging",
+            "name": "[parameters('sbus_name')]",
+            "apiVersion": "2015-08-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "provisioningState": "Succeeded",
+                "status": "Active",
+                "createdAt": "2017-02-23T22:43:54.507Z",
+                "serviceBusEndpoint": "[concat('https://', parameters('sbus_name'),'.servicebus.windows.net:443/')]",
+                "enabled": true,
+                "updatedAt": "2017-02-23T22:44:20.81Z"
+            },
+            "resources": [],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
+            "name": "[concat(parameters('sbus_name'),'/RootManageSharedAccessKey')]",
+            "apiVersion": "2015-08-01",
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('sbus_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "name": "[concat(parameters('sbus_name'),'/iothub-queue')]",
+            "apiVersion": "2015-08-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "maxSizeInMegabytes": 2048,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "14.00:00:00",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "isAnonymousAccessible": false,
+                "status": "Active",
+                "createdAt": "2017-02-23T23:11:18.407Z",
+                "updatedAt": "2017-02-23T23:11:28.673Z",
+                "accessedAt": "0001-01-01T00:00:00Z",
+                "supportOrdering": false,
+                "countDetails": {
+                    "activeMessageCount": 0,
+                    "deadLetterMessageCount": 0,
+                    "scheduledMessageCount": 0,
+                    "transferMessageCount": 0,
+                    "transferDeadLetterMessageCount": 0
+                },
+                "autoDeleteOnIdle": "10675199.02:48:05.4775807",
+                "enablePartitioning": true,
+                "enableExpress": false
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('sbus_name'))]"
+            ]
+        }
+    ]
+}

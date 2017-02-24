@@ -1,0 +1,23 @@
+FROM ubuntu
+MAINTAINER chvugrin@microsoft.com
+RUN apt-get update && \
+  apt-get install -y git && \
+  apt-get install -y jq && \
+  apt-get install -y uuid && \
+  apt-get install -y wget && \
+  apt-get install -y curl && \
+  apt-get install -y nodejs && \
+  apt-get install -y npm && \
+  apt-get install -y vim && \
+  npm -g install azure-cli && \
+  npm install -g iothub-explorer && \
+  ln -s /usr/bin/nodejs /usr/bin/node && \
+  cd $HOME && \
+  cd /opt && \
+  mkdir ~/.ssh && \
+  ssh-keygen -t rsa -f  ~/.ssh/id_rsa -P ""
+COPY createIotSolution.sh /opt
+COPY iothub.json /opt
+COPY sbus.json /opt
+COPY stream-query.txt /opt
+#ENV PATH="/usr/local/go/bin:${PATH}"
