@@ -1,0 +1,3 @@
+app.clientconnection=HostName=SECRET_NAME.azure-devices.net;DeviceId=chrisjedevice1;SharedAccessKey=SSSSSH_SECRET
+app.deviceId=chrisjedevice1
+app.connection=HostName=SECRET_NAME.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=SSSSSSH_SECRET
