@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="java-iotclient">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/commons-codec-1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/gson-2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/iothub-java-device-client-1.0.16.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/iothub-java-service-client-1.0.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/org.eclipse.paho.client.mqttv3-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/pi4j-core-1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
