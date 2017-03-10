@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.io.IOException;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -22,19 +21,23 @@ public class Application implements CommandLineRunner {
        SpringApplication.run(Application.class);
     }
 
+
+
     @Override
     public void run(String... strings) throws Exception {
         try{
+            logger.info("starting app...");
             //iotc.registerDevice();
-            iotc.sendMessages();
+            //iotc.sendMessages();
+            /*
         }catch(java.net.URISyntaxException uex){
             logger.error(uex.getMessage());
         }catch(IOException iex){
             logger.error(iex.getMessage());
+*/
         }catch(Exception ex){
             System.out.println("Exception occured:");
             ex.printStackTrace();
         }
     }
-
 }

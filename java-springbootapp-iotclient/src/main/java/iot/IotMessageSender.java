@@ -12,6 +12,9 @@ public class IotMessageSender implements Runnable {
     @Autowired
     private IotComponent iotc;
 
+    @Autowired
+    private IotUtil iotutil;
+
     public volatile boolean stopThread = false;
 
     public void run()  {
@@ -19,7 +22,7 @@ public class IotMessageSender implements Runnable {
 
             while (!stopThread) {
 
-                int currentWindSpeed = iotc.getIOTMetric();
+                int currentWindSpeed = iotutil.getIOTMetric();
 
                 TelemetryDataPoint telemetryDataPoint = new TelemetryDataPoint();
                 telemetryDataPoint.deviceId = iotc.deviceId;

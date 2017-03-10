@@ -2,6 +2,10 @@ import com.microsoft.azure.iothub.IotHubEventCallback;
 import com.microsoft.azure.iothub.IotHubStatusCode;
 import com.microsoft.azure.iothub.Message;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 class MessageSender implements Runnable {
 
     protected volatile boolean stopThread = false;
@@ -10,10 +14,18 @@ class MessageSender implements Runnable {
         try {
 
             while (!stopThread) {
-                int currentWindSpeed = IotUtil.getIOTMetric();
+                double currentWindSpeed = IotUtil.getIOTMetric();
+
+                //  Generate data object
+                //{"deviceId": id, "windSpeed": currWindSpeed,
+                // "powerOutput": currPowerOutput, "payerId": "mueken@microsoft", "eventDate": now}
                 TelemetryDataPoint telemetryDataPoint = new TelemetryDataPoint();
                 telemetryDataPoint.deviceId = AzureIotHubClient.deviceId;
                 telemetryDataPoint.windSpeed = currentWindSpeed;
+                telemetryDataPoint.powerOutput  = 800;
+                telemetryDataPoint.payerId = "mueken@microsoft";
+                telemetryDataPoint.eventDate = Instant.now().toString();
+                telemetryDataPoint.eventType = "telemetry";
 
                 String msgStr = telemetryDataPoint.serialize();
                 Message msg = new Message(msgStr);

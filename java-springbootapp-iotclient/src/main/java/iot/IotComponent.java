@@ -1,23 +1,20 @@
 package iot;
 
+import com.google.gson.Gson;
 import com.microsoft.azure.iot.service.exceptions.IotHubException;
 import com.microsoft.azure.iot.service.sdk.Device;
 import com.microsoft.azure.iot.service.sdk.RegistryManager;
 import com.microsoft.azure.iothub.DeviceClient;
 import com.microsoft.azure.iothub.IotHubClientProtocol;
-import com.microsoft.azure.servicebus.MessageSender;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+//import com.microsoft.azure.documentdb.DocumentClient;
+
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,15 +33,16 @@ class IotComponent {
     @Value("${app.deviceId}")
     static String deviceId;
 
-    GpioController gpio = GpioFactory.getInstance();
-    private static GpioPinDigitalOutput pin;
 
     private static Logger logger = Logger.getLogger(IotComponent.class);
 
     private static IotHubClientProtocol protocol = IotHubClientProtocol.MQTT;
     protected static DeviceClient client;
 
-    private void registerDevice() throws Exception {
+  //  DocumentClient client = new DocumentClient("https://querydemo.documents.azure.com",
+             //                                        "+9x2hFc7QsZ5hReULaqmBs01amCFiQAJZuoTqdZ79h/fGd2RSYoJVXAegVS7suJBg1pB+RQC8D45gp7bk0rSUw==", new ConnectionPolicy(),ConsistencyLevel.Session);
+
+    void registerDevice() throws Exception {
 
         RegistryManager registryManager = RegistryManager.createFromConnectionString(connectionString);
         Device device;
@@ -62,28 +60,13 @@ class IotComponent {
     }
 
 
-    int getIOTMetric() throws InterruptedException {
-        int count = 0;
+    List<Gson> getDocumentDBItemsTest(){
 
-        //  Initialize pin 07 on Raspberry PI
-        if (pin == null) {
-            pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "lightsensor", PinState.LOW);
-        } else {
-            pin.setMode(PinMode.DIGITAL_OUTPUT);
-        }
-        //  Wait 1/2 sec
-        Thread.sleep(500);
-
-        // Make Pin 7 now an InputPIn now (Difference between in and out is difference between sensor and capacitator)
-        pin.setMode(PinMode.DIGITAL_INPUT);
-
-        // When Low
-        while (pin.isLow()) {
-            count++;
-        }
-
-        return count;
-
+       // FeedResponse<Document> queryResults = this.client.queryDocuments(
+         //       "/dbs/familydb/colls/familycoll",
+           //     "SELECT * FROM Family WHERE Family.lastName = 'Andersen'",
+             //   null);
+        return null;
     }
 
     void sendMessages() throws Exception {

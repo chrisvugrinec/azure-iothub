@@ -33,7 +33,8 @@ public class AzureIotHubClient {
    }
 
 
-
+    //  arg0 = connectionstring
+    //  arg1 = deviceId (should be in the connectionstring as well)
    public static void main(String[] args){
       clientConnectionString = args[0];
       deviceId = args[1];
