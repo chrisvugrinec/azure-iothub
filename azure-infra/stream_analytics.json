@@ -8,10 +8,6 @@
       "maxLength": 63,
       "metadata": {
         "description": "Stream Analytics Job Name, can contain alphanumeric characters and hypen and must be 3-63 characters long"
-      },
-      "location": {
-            "defaultValue": "West Europe",
-            "type": "String"
       }
     },
     "numberOfStreamingUnits": {
@@ -34,6 +30,10 @@
       "metadata": {
         "description": "Number of Streaming Units"
       }
+    },
+    "location": {
+          "defaultValue": "West Europe",
+          "type": "String"
     }
   },
   "resources": [
