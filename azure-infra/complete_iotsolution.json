@@ -39,54 +39,6 @@
           "location": {"value": "[variables('location')]"}
         }
       }
-    },
-    {
-      "apiVersion": "[variables('apiVersionIotHubs')]",
-      "name": "iot-azure-iothub",
-      "type": "Microsoft.Devices/IotHubs",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/iothub.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "iothub_name": {"value": "[parameters('iothubName')]"},
-          "location": {"value": "[variables('location')]"}
-        }
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersionServiceBus')]",
-      "name": "iot-azure-servicebus",
-      "type": "Microsoft.ServiceBus/namespaces",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/sbus.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "sbus_name": {"value": "[parameters('sbusName')]"},
-          "location": {"value": "[variables('location')]"}
-        }
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersionStreamingJobs')]",
-      "name": "iot-azure-streamanalytics",
-      "type": "Microsoft.StreamAnalytics/StreamingJobs",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/stream_analytics.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "streamAnalyticsJobName": {"value": "[parameters('streamanalyticsJobname')]"},
-          "location": {"value": "[variables('location')]"}
-        }
-      }
     }
   ]
 }
