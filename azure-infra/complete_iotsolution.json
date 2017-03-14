@@ -29,7 +29,7 @@
             "kind": "GlobalDocumentDB",
             "name": "[parameters('databaseAccountsName')]",
             "apiVersion": "2015-04-08",
-            "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "tags": {},
             "properties": {
                 "databaseAccountOfferType": "Standard",
@@ -38,7 +38,7 @@
                     "maxIntervalInSeconds": 5,
                     "maxStalenessPrefix": 100
                 },
-                "name": "[parameters('databaseAccounts_name')]"
+                "name": "[parameters('databaseAccountsName')]"
             },
             "dependsOn": []
         },
