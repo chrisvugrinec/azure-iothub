@@ -80,6 +80,23 @@
           "location": {"value": "[variables('location')]"}
         }
       }
+    },
+    {
+      "apiVersion": "[variables('apiVersionStreamingJobs')]",
+      "name": "iot-azure-streamanalytics",
+      "location": "[variables('location')]",
+      "type": "Microsoft.StreamAnalytics/StreamingJobs",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('artifactsLocationURL'), '/stream_analytics.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "streamAnalyticsJobName": {"value": "[parameters('streamanalyticsJobname')]"},
+          "location": {"value": "[variables('location')]"}
+        }
+      }
     }
   ]
 }
