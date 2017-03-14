@@ -2,6 +2,12 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.1.0.0",
   "parameters": {
+        "databaseAccounts_name": {
+            "type": "String"
+        }
+  },
+  "variables": {
+      "artifactsLocationURL": "https://raw.githubusercontent.com/chrisvugrinec/azure-iothub/master/azure-infra",
   },
   "resources": [
    {
@@ -11,22 +17,11 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/nested/loadBalancer.json')]",
+          "uri": "[concat(variables('artifactsLocationURL'), '/documentdb.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "loadBalancerName": {"value": "[variables('loadBalancerName')]"},
-          "dnsHostName":{"value": "[variables('namingInfix')]"},
-          "loadBalancerBackendAddressPoolName":{"value": "[variables('loadBalancerBackendAddressPoolName')]"},
-          "loadBalancerInboundNatRuleNamePrefix":{"value": "[variables('loadBalancerInboundNatRuleNamePrefix')]"},
-          "frontendPort1":{"value": "[variables('httpPort')]"},
-          "backendPort1":{"value": "[variables('adminSitePort')]"},
-          "frontendPort2":{"value": "[variables('gethRPCPort')]"},
-          "backendPort2":{"value": "[variables('gethRPCPort')]"},
-          "numInboundNATRules":{"value": "[parameters('numTXNodes')]"},
-          "inboundNATRuleFrontendStartingPort":{"value": "[variables('sshNATFrontEndStartingPort')]"},
-          "inboundNATRuleBackendPort":{"value": "[variables('sshPort')]"},
-          "location":{"value": "[variables('location')]"}
+          "databaseAccounts_name": {"value": "[parameters('databaseAccounts_name')]"}
         }
       }
     }
