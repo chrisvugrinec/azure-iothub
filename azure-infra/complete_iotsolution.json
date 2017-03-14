@@ -2,10 +2,10 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.1.0.0",
   "parameters": {
-        "databaseAccounts_name": {
+        "databaseAccountsName": {
             "type": "String"
         },
-        "iothub_name": {
+        "iothubName": {
             "type": "String"
         }
   },
@@ -24,7 +24,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "databaseAccounts_name": {"value": "[parameters('databaseAccounts_name')]"}
+          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"}
         }
       }
     },
@@ -39,7 +39,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "iothub_name": {"value": "[parameters('iothub_name')]"}
+          "iothub_name": {"value": "[parameters('iothubName')]"}
         }
       }
     }
