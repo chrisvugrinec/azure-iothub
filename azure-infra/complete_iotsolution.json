@@ -24,22 +24,23 @@
       "apiVersionStreamingJobs": "2016-03-01"
   },
   "resources": [
-   {
-      "apiVersion": "[variables('apiVersionDatabaseAccounts')]",
-      "name": "iot-azure-documentdb",
-      "location": "[variables('location')]",
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/documentdb.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
-          "location": {"value": "[variables('location')]"}
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "kind": "GlobalDocumentDB",
+            "name": "[parameters('databaseAccountsName')]",
+            "apiVersion": "2015-04-08",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "name": "[parameters('databaseAccountsName')]"
+            },
+            "dependsOn": []
         }
-      }
-    }
   ]
 }

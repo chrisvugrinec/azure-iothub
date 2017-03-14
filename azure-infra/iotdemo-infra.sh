@@ -14,7 +14,7 @@ databaseAccounts_name="iotdemo-db2"
 azure group create $rg westeurope
 
 # Create IOT DocumentDB
-#azure group deployment create $rg -p "{\"databaseAccounts_name\":{\"value\":\""$databaseAccounts_name"\"}}" --template-file documentdb.json
+azure group deployment create $rg -p "{\"databaseAccounts_name\":{\"value\":\""$databaseAccounts_name"\"}}" --template-file documentdb.json
 
 # Create IOT Hub
 #azure group deployment create $rg -p "{\"iothub_name\":{\"value\":\""$iothubname"\"}}" --template-file iothub.json
@@ -23,4 +23,4 @@ azure group create $rg westeurope
 #azure group deployment create $rg -p "{\"sbus_name\":{\"value\":\""$sbusname"\"}}" --template-file sbus.json
 
 # Create Stream Analytics
-azure group deployment create $rg -p "{\"streamAnalyticsJobName\":{\"value\":\""$jobname"\"}}" --template-file stream_analytics.json
+#azure group deployment create $rg -p "{\"streamAnalyticsJobName\":{\"value\":\""$jobname"\"}}" --template-file stream_analytics.json
