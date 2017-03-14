@@ -11,8 +11,11 @@
         "sbusName": {
             "type": "String"
         },
-       "streamanalyticsJobname": {
+        "streamanalyticsJobname": {
             "type": "String"
+        },
+       "streamanalyticsNumberOfStreamingUnits": {
+            "type": "int"
         }
   },
   "variables": {
@@ -82,19 +85,26 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersionStreamingJobs')]",
-      "name": "iot-azure-streamanalytics",
-      "location": "[variables('location')]",
       "type": "Microsoft.StreamAnalytics/StreamingJobs",
+      "apiVersion": "2016-03-01",
+      "name": "[parameters('streamanalyticsJobname')]",
+      "location": "[variables('location')]",
       "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/stream_analytics.json')]",
-          "contentVersion": "1.0.0.0"
+        "sku": {
+          "name": "standard"
         },
-        "parameters": {
-          "streamAnalyticsJobName": {"value": "[parameters('streamanalyticsJobname')]"},
-          "location": {"value": "[variables('location')]"}
+        "outputErrorPolicy": "stop",
+        "eventsOutOfOrderPolicy": "adjust",
+        "eventsOutOfOrderMaxDelayInSeconds": 0,
+        "eventsLateArrivalMaxDelayInSeconds": 5,
+        "dataLocale": "en-US",
+        "inputs": [],
+        "transformation": {
+          "name": "Transformation",
+          "properties": {
+            "streamingUnits": "[parameters('streamanalyticsNumberOfStreamingUnits')]",
+            "query": "SELECT\r\n    *\r\nINTO\r\n    [iotdemo-output]\r\nFROM\r\n    [iotdemo-input]"
+          }
         }
       }
     }
