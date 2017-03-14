@@ -35,8 +35,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
-          "location": {"value": "[variables('location')]"}
+          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"}
         }
       }
     }
