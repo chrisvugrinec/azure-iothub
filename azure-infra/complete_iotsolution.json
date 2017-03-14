@@ -27,7 +27,7 @@
         {
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "kind": "GlobalDocumentDB",
-            "name": "[parameters('databaseAccounts_name')]",
+            "name": "[parameters('databaseAccountsName')]",
             "apiVersion": "2015-04-08",
             "location": "[parameters('location')]",
             "tags": {},
