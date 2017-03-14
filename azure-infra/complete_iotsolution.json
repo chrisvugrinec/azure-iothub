@@ -41,6 +41,23 @@
                 "name": "[parameters('databaseAccountsName')]"
             },
             "dependsOn": []
-        }
+        },
+        {
+            "apiVersion": "[variables('apiVersionIotHubs')]",
+            "name": "iot-azure-iothub",
+            "location": "[variables('location')]",
+            "type": "Microsoft.Devices/IotHubs",
+            "properties": {
+               "mode": "Incremental",
+               "templateLink": {
+               "uri": "[concat(variables('artifactsLocationURL'), '/iothub.json')]",
+               "contentVersion": "1.0.0.0"
+            },
+            "parameters": {
+               "iothub_name": {"value": "[parameters('iothubName')]"},
+               "location": {"value": "[variables('location')]"}
+            }
+         }
+    },
   ]
 }
