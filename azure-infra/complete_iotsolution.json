@@ -17,9 +17,14 @@
   },
   "variables": {
       "artifactsLocationURL": "https://raw.githubusercontent.com/chrisvugrinec/azure-iothub/master/azure-infra",
+      "apiVersionDatabaseAccounts": "2015-04-08",
+      "apiVersionIotHubs": "2016-02-03",
+      "apiVersionServiceBus": "2015-08-01",
+      "apiVersionStreamingJobs": "2016-03-01"
   },
   "resources": [
    {
+      "apiVersion": "[variables('apiVersionDatabaseAccounts')]",
       "name": "iot-azure-documentdb",
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "properties": {
@@ -34,6 +39,7 @@
       }
     },
     {
+      "apiVersion": "[variables('apiVersionIotHubs')]",
       "name": "iot-azure-iothub",
       "type": "Microsoft.Devices/IotHubs",
       "properties": {
@@ -48,6 +54,7 @@
       }
     },
     {
+      "apiVersion": "[variables('apiVersionServiceBus')]",
       "name": "iot-azure-servicebus",
       "type": "Microsoft.ServiceBus/namespaces",
       "properties": {
@@ -62,6 +69,7 @@
       }
     },
     {
+      "apiVersion": "[variables('apiVersionStreamingJobs')]",
       "name": "iot-azure-streamanalytics",
       "type": "Microsoft.StreamAnalytics/StreamingJobs",
       "properties": {
