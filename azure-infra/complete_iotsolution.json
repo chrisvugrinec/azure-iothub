@@ -24,24 +24,25 @@
       "apiVersionStreamingJobs": "2016-03-01"
   },
   "resources": [
-   {
-      "apiVersion": "[variables('apiVersionDatabaseAccounts')]",
-      "name": "iot-azure-documentdb",
-      "location": "[variables('location')]",
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/documentdb.json')]",
-          "contentVersion": "1.0.0.0"
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "kind": "GlobalDocumentDB",
+            "name": "[parameters('databaseAccounts_name')]",
+            "apiVersion": "2015-04-08",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "name": "[parameters('databaseAccounts_name')]"
+            },
+            "dependsOn": []
         },
-        "parameters": {
-          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
-          "location": {"value": "[variables('location')]"}
-        }
-      }
-    },
-    {
+        {
             "apiVersion": "[variables('apiVersionIotHubs')]",
             "name": "iot-azure-iothub",
             "location": "[variables('location')]",
@@ -61,7 +62,24 @@
                "iothub_name": {"value": "[parameters('iothubName')]"},
                "location": {"value": "[variables('location')]"}
             }
-         }
+        }
+    },
+    {
+      "apiVersion": "[variables('apiVersionServiceBus')]",
+      "name": "iot-azure-servicebus",
+      "location": "[variables('location')]",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('artifactsLocationURL'), '/sbus.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "sbus_name": {"value": "[parameters('sbusName')]"},
+          "location": {"value": "[variables('location')]"}
+        }
+      }
     }
   ]
 }
