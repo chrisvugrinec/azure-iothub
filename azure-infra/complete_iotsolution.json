@@ -20,7 +20,6 @@
   },
   "resources": [
    {
-      "apiVersion": "[variables('apiVersionDeployments')]",
       "name": "iot-azure-documentdb",
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "properties": {
@@ -35,7 +34,6 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersionDeployments')]",
       "name": "iot-azure-iothub",
       "type": "Microsoft.Devices/IotHubs",
       "properties": {
@@ -50,7 +48,6 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersionDeployments')]",
       "name": "iot-azure-servicebus",
       "type": "Microsoft.ServiceBus/namespaces",
       "properties": {
@@ -65,7 +62,6 @@
       }
     },
     {
-      "apiVersion": "[variables('apiVersionDeployments')]",
       "name": "iot-azure-streamanalytics",
       "type": "Microsoft.StreamAnalytics/StreamingJobs",
       "properties": {
