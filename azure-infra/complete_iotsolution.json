@@ -4,6 +4,9 @@
   "parameters": {
         "databaseAccounts_name": {
             "type": "String"
+        },
+        "iothub_name": {
+            "type": "String"
         }
   },
   "variables": {
@@ -12,7 +15,7 @@
   "resources": [
    {
       "apiVersion": "[variables('apiVersionDeployments')]",
-      "name": "papaya-azure-documentdb",
+      "name": "iot-azure-documentdb",
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "properties": {
         "mode": "Incremental",
@@ -22,6 +25,21 @@
         },
         "parameters": {
           "databaseAccounts_name": {"value": "[parameters('databaseAccounts_name')]"}
+        }
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersionDeployments')]",
+      "name": "iot-azure-iothub",
+      "type": "Microsoft.Devices/IotHubs",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('artifactsLocationURL'), '/iothub.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "iothub_name": {"value": "[parameters('iothub_name')]"}
         }
       }
     }

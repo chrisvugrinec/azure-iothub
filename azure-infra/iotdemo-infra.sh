@@ -17,7 +17,7 @@ azure group create $rg westeurope
 azure group deployment create $rg -p "{\"databaseAccounts_name\":{\"value\":\""$databaseAccounts_name"\"}}" --template-file documentdb.json
 
 # Create IOT Hub
-azure group deployment create $rg -p "{\"IotHubs_iothub_demo_name\":{\"value\":\""$iothubname"\"}}" --template-file iothub.json
+azure group deployment create $rg -p "{\"iothub_name\":{\"value\":\""$iothubname"\"}}" --template-file iothub.json
 
 # Create Service Bus
 azure group deployment create $rg -p "{\"sbus_name\":{\"value\":\""$sbusname"\"}}" --template-file sbus.json

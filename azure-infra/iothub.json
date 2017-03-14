@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "IotHubs_iothub_demo_name": {
+        "iothub_name": {
             "defaultValue": "iothubdemo",
             "type": "String"
         }
@@ -16,7 +16,7 @@
                 "tier": "Free",
                 "capacity": 1
             },
-            "name": "[parameters('IotHubs_iothub_demo_name')]",
+            "name": "[parameters('iothub_name')]",
             "apiVersion": "2016-02-03",
             "location": "[resourceGroup().location]",
             "tags": {},
