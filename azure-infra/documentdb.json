@@ -5,6 +5,10 @@
         "databaseAccounts_name": {
             "defaultValue": "iothubdemodb",
             "type": "String"
+        },
+        "location": {
+            "defaultValue": "West Europe",
+            "type": "String"
         }
     },
     "variables": {},
@@ -14,7 +18,7 @@
             "kind": "GlobalDocumentDB",
             "name": "[parameters('databaseAccounts_name')]",
             "apiVersion": "2015-04-08",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "tags": {},
             "properties": {
                 "databaseAccountOfferType": "Standard",

@@ -17,6 +17,7 @@
   },
   "variables": {
       "artifactsLocationURL": "https://raw.githubusercontent.com/chrisvugrinec/azure-iothub/master/azure-infra",
+      "location": "[resourceGroup().location]",
       "apiVersionDatabaseAccounts": "2015-04-08",
       "apiVersionIotHubs": "2016-02-03",
       "apiVersionServiceBus": "2015-08-01",
@@ -34,7 +35,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"}
+          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
+          "location": {"value": "[variables('location')]"}
         }
       }
     },
@@ -49,7 +51,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "iothub_name": {"value": "[parameters('iothubName')]"}
+          "iothub_name": {"value": "[parameters('iothubName')]"},
+          "location": {"value": "[variables('location')]"}
         }
       }
     },
@@ -64,7 +67,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "sbus_name": {"value": "[parameters('sbusName')]"}
+          "sbus_name": {"value": "[parameters('sbusName')]"},
+          "location": {"value": "[variables('location')]"}
         }
       }
     },
@@ -79,7 +83,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "streamAnalyticsJobName": {"value": "[parameters('streamanalyticsJobname')]"}
+          "streamAnalyticsJobName": {"value": "[parameters('streamanalyticsJobname')]"},
+          "location": {"value": "[variables('location')]"}
         }
       }
     }

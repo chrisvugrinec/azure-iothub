@@ -5,6 +5,10 @@
         "sbus_name": {
             "defaultValue": "sbusiothub",
             "type": "String"
+        },
+        "location": {
+            "defaultValue": "West Europe",
+            "type": "String"
         }
     },
     "variables": {},
@@ -18,7 +22,7 @@
             "kind": "Messaging",
             "name": "[parameters('sbus_name')]",
             "apiVersion": "2015-08-01",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "tags": {},
             "properties": {
                 "provisioningState": "Succeeded",

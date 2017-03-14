@@ -5,6 +5,10 @@
         "iothub_name": {
             "defaultValue": "iothubdemo",
             "type": "String"
+        },
+        "location": {
+            "defaultValue": "West Europe",
+            "type": "String"
         }
     },
     "variables": {},
@@ -18,7 +22,7 @@
             },
             "name": "[parameters('iothub_name')]",
             "apiVersion": "2016-02-03",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "tags": {},
             "properties": {
                 "ipFilterRules": [],
