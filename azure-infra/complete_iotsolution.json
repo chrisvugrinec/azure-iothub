@@ -32,13 +32,14 @@
           "properties": {
              "mode": "Incremental",
              "templateLink": {
-             "uri": "[concat(variables('artifactsLocationURL'), '/documentdb.json')]",
-             "contentVersion": "1.0.0.0"
-          },
-          "parameters": {
-             "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
-             "location": {"value": "[variables('location')]"}
-          }
+                "uri": "[concat(variables('artifactsLocationURL'), '/documentdb.json')]",
+                "contentVersion": "1.0.0.0"
+             },
+             "parameters": {
+                "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
+                "location": {"value": "[variables('location')]"}
+             }
+           }
         },
         {
             "apiVersion": "[variables('apiVersionIotHubs')]",
