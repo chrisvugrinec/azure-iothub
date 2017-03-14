@@ -47,6 +47,11 @@
             "name": "iot-azure-iothub",
             "location": "[variables('location')]",
             "type": "Microsoft.Devices/IotHubs",
+            "sku": {
+                "name": "F1",
+                "tier": "Free",
+                "capacity": 1
+            },
             "properties": {
                "mode": "Incremental",
                "templateLink": {
