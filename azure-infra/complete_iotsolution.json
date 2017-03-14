@@ -24,24 +24,24 @@
       "apiVersionStreamingJobs": "2016-03-01"
   },
   "resources": [
-       {
-          "apiVersion": "[variables('apiVersionDatabaseAccounts')]",
-          "name": "iot-azure-documentdb",
-          "location": "[variables('location')]",
-          "type": "Microsoft.DocumentDB/databaseAccounts",
-          "properties": {
-             "mode": "Incremental",
-             "templateLink": {
-                "uri": "[concat(variables('artifactsLocationURL'), '/documentdb.json')]",
-                "contentVersion": "1.0.0.0"
-             },
-             "parameters": {
-                "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
-                "location": {"value": "[variables('location')]"}
-             }
-           }
+   {
+      "apiVersion": "[variables('apiVersionDatabaseAccounts')]",
+      "name": "iot-azure-documentdb",
+      "location": "[variables('location')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('artifactsLocationURL'), '/documentdb.json')]",
+          "contentVersion": "1.0.0.0"
         },
-        {
+        "parameters": {
+          "databaseAccounts_name": {"value": "[parameters('databaseAccountsName')]"},
+          "location": {"value": "[variables('location')]"}
+        }
+      }
+    },
+    {
             "apiVersion": "[variables('apiVersionIotHubs')]",
             "name": "iot-azure-iothub",
             "location": "[variables('location')]",
@@ -62,6 +62,6 @@
                "location": {"value": "[variables('location')]"}
             }
          }
-    },
+    }
   ]
 }
