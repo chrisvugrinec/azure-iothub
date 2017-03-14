@@ -1,7 +1,5 @@
-#FROM alpine
 FROM ubuntu
 MAINTAINER chvugrin@microsoft.com
-#RUN apk --update add openjdk7-jre
 RUN apt-get update
 RUN apt-get -y install default-jdk
 EXPOSE 8080
