@@ -1,0 +1,3 @@
+registrationConnectionString=HostName=XXXXYOURCONNECTIONSTRING
+documentDBHost=https://XXXXYOURDBHOSTo-db.documents.azure.com:443/
+documentDBMasterKey=jAYXXXXXYOURDOCDBMASTERKEY
