@@ -1,9 +1,9 @@
-#echo "iothub_name:"
-#read iothub_name
-iothub_name=iotdemo-hub
-#echo "resource group:"
-#read rg
-rg=iotdemohub
+echo "iothub_name:"
+read iothub_name
+#iothub_name=iotdemo-hub
+echo "resource group:"
+read rg
+#rg=iotdemohub
 
 rm -f result.txt
 

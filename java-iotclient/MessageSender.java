@@ -5,25 +5,30 @@ import com.microsoft.azure.iothub.Message;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.lang.Math;
 
 class MessageSender implements Runnable {
 
     protected volatile boolean stopThread = false;
 
     public void run()  {
+        double maxval = 12.0;
+        double minval = 8.0;
+
         try {
 
             while (!stopThread) {
-                double currentWindSpeed = IotUtil.getIOTMetric();
+                //double currentWindSpeed = IotUtil.getIOTMetric();
+
+                double currentWindSpeed = (Math.random() * (maxval- minval)) + minval;
 
                 //  Generate data object
                 //{"deviceId": id, "windSpeed": currWindSpeed,
-                // "powerOutput": currPowerOutput, "payerId": "mueken@microsoft", "eventDate": now}
+                // "powerOutput": currPowerOutput, "payerId": "chris@microsoft", "eventDate": now}
                 TelemetryDataPoint telemetryDataPoint = new TelemetryDataPoint();
-                telemetryDataPoint.deviceId = AzureIotHubClient.deviceId;
                 telemetryDataPoint.windSpeed = currentWindSpeed;
                 telemetryDataPoint.powerOutput  = 800;
-                telemetryDataPoint.payerId = "mueken@microsoft";
+                telemetryDataPoint.payerId = "chris@microsoft";
                 telemetryDataPoint.eventDate = Instant.now().toString();
                 telemetryDataPoint.eventType = "telemetry";
 

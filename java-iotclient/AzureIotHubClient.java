@@ -10,13 +10,12 @@ public class AzureIotHubClient {
 
 
    static String clientConnectionString;
-   static  String deviceId;
    static IotHubClientProtocol protocol = IotHubClientProtocol.MQTT;
    static DeviceClient client;
 
 
  
-   protected void sendMessages(String clientConnectionString, String deviceId ) throws Exception {
+   protected void sendMessages(String clientConnectionString ) throws Exception {
 
 
      client = new DeviceClient(clientConnectionString, protocol);
@@ -34,13 +33,13 @@ public class AzureIotHubClient {
 
 
     //  arg0 = connectionstring
-    //  arg1 = deviceId (should be in the connectionstring as well)
    public static void main(String[] args){
-      clientConnectionString = args[0];
-      deviceId = args[1];
+
+      //clientConnectionString = args[0];
+      clientConnectionString = System.getenv("IOTHUB");
       AzureIotHubClient t = new AzureIotHubClient();
       try{
-        t.sendMessages(clientConnectionString,deviceId);
+        t.sendMessages(clientConnectionString);
       }catch(Exception ex){
         ex.printStackTrace();
       }
