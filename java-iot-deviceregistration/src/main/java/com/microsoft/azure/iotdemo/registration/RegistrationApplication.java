@@ -8,12 +8,6 @@ import org.springframework.context.annotation.Bean;
 public class RegistrationApplication {
 
 	
-    @Bean
-    public RegistrationApplication repository() throws Exception {
-        return null;
-        //return new DeviceRepository(hostName, keyName, keyValue);
-    }
-
     public static void main(String[] args)  {
         new SpringApplicationBuilder(RegistrationApplication.class).web(true).run(args);
     }

@@ -7,8 +7,6 @@ class TelemetryDataPoint {
 
     public String deviceId;
     public double windSpeed;
-    public double powerOutput;
-    public String payerId;
     public String eventDate;
     public String eventType;
 
@@ -17,3 +15,4 @@ class TelemetryDataPoint {
         return gson.toJson(this);
     }
 }
+

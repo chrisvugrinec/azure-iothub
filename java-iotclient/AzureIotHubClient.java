@@ -9,25 +9,17 @@ import java.util.concurrent.Executors;
 public class AzureIotHubClient {
 
 
-   static String clientConnectionString;
    static IotHubClientProtocol protocol = IotHubClientProtocol.MQTT;
    static DeviceClient client;
 
 
  
-   protected void sendMessages(String clientConnectionString ) throws Exception {
+   protected void sendMessages(String clientConnectionString, String deviceName ) throws Exception {
 
 
      client = new DeviceClient(clientConnectionString, protocol);
      client.open();
-     MessageSender sender = new MessageSender();
-
-     ExecutorService executor = Executors.newFixedThreadPool(1);
-     executor.execute(sender);
-
-     System.out.println("Press ENTER to exit.");
-     System.in.read();
-     executor.shutdownNow();
+     new MessageSender().send(deviceName);
      client.close();
    }
 
@@ -35,14 +27,13 @@ public class AzureIotHubClient {
     //  arg0 = connectionstring
    public static void main(String[] args){
 
-      //clientConnectionString = args[0];
-      clientConnectionString = System.getenv("IOTHUB");
       AzureIotHubClient t = new AzureIotHubClient();
       try{
-        t.sendMessages(clientConnectionString);
+        t.sendMessages(System.getenv("IOTHUB"),System.getenv("DEVICE") );
       }catch(Exception ex){
         ex.printStackTrace();
       }
    }
 }
+
 

@@ -5,6 +5,9 @@ RUN apt-get -y install default-jdk
 RUN apt-get -y install bc
 RUN mkdir /opt/lib/
 COPY libs /opt/lib/
+COPY start.sh /opt/
+COPY getRandomDevice.sh /opt/
+COPY result.txt  /opt/
 
 COPY *.class /opt/
 ENV CLASSPATH="/opt/lib/commons-codec-1.9.jar:${CLASSCLASSPATH}"
@@ -15,4 +18,4 @@ ENV CLASSPATH="/opt/lib/pi4j-core-1.1.jar:${CLASSPATH}"
 
 WORKDIR /opt/
 
-CMD [ "/usr/bin/java" , "AzureIotHubClient" ]
+CMD [ "/bin/bash", "./start.sh" ]

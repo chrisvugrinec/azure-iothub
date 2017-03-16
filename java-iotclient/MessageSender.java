@@ -7,17 +7,14 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.lang.Math;
 
-class MessageSender implements Runnable {
+class MessageSender {
 
-    protected volatile boolean stopThread = false;
 
-    public void run()  {
+    public void send(String deviceName)  {
         double maxval = 12.0;
         double minval = 8.0;
 
-        try {
-
-            while (!stopThread) {
+        try{
                 //double currentWindSpeed = IotUtil.getIOTMetric();
 
                 double currentWindSpeed = (Math.random() * (maxval- minval)) + minval;
@@ -27,8 +24,7 @@ class MessageSender implements Runnable {
                 // "powerOutput": currPowerOutput, "payerId": "chris@microsoft", "eventDate": now}
                 TelemetryDataPoint telemetryDataPoint = new TelemetryDataPoint();
                 telemetryDataPoint.windSpeed = currentWindSpeed;
-                telemetryDataPoint.powerOutput  = 800;
-                telemetryDataPoint.payerId = "chris@microsoft";
+                telemetryDataPoint.deviceId = deviceName;
                 telemetryDataPoint.eventDate = Instant.now().toString();
                 telemetryDataPoint.eventType = "telemetry";
 
@@ -41,10 +37,8 @@ class MessageSender implements Runnable {
                 AzureIotHubClient.client.sendEventAsync(msg, callback, lockobj);
 
                 synchronized (lockobj) {
-                    lockobj.wait();
+                	lockobj.wait();
                 }
-                Thread.sleep(2000);
-            }
         } catch (InterruptedException e) {
             System.out.println("Finished.");
         }
@@ -63,6 +57,7 @@ class MessageSender implements Runnable {
         }
     }
 }
+
 
 
 
