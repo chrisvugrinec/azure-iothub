@@ -25,6 +25,15 @@ import com.microsoft.azure.documentdb.QueryIterable;
 import com.microsoft.azure.iot.service.exceptions.IotHubException;
 import com.microsoft.azure.iot.service.sdk.Device;
 import com.microsoft.azure.iot.service.sdk.RegistryManager;
+import com.microsoft.windowsazure.Configuration;
+import com.microsoft.windowsazure.exception.ServiceException;
+import com.microsoft.windowsazure.services.servicebus.ServiceBusConfiguration;
+import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
+import com.microsoft.windowsazure.services.servicebus.ServiceBusService;
+import com.microsoft.windowsazure.services.servicebus.models.BrokeredMessage;
+import com.microsoft.windowsazure.services.servicebus.models.ReceiveMessageOptions;
+import com.microsoft.windowsazure.services.servicebus.models.ReceiveMode;
+import com.microsoft.windowsazure.services.servicebus.models.ReceiveQueueMessageResult;
 
 
 @RestController
@@ -39,7 +48,13 @@ public class DeviceUtil {
     @Value("${registrationConnectionString}")
     private String registrationConnectionString;
 
-	
+    @Value("${sbusname}")
+    private String sbusname;
+
+    @Value("${sbuskey}")
+    private String sbuskey;
+
+    
 	private static final Logger LOGGER = Logger.getLogger(DeviceUtil.class.getName());
 	private static final String databasename = "devices";
 	private static final String collectionName = "deviceItems";
@@ -49,6 +64,16 @@ public class DeviceUtil {
 	private final Gson gson = new Gson();
 
     private static DocumentClient documentClient;
+    Configuration config =
+    	    ServiceBusConfiguration.configureWithSASAuthentication(
+    	    		sbusname,
+    	            "RootManageSharedAccessKey",
+    	            sbuskey,
+    	            ".servicebus.windows.net"
+    	            );
+    private static ServiceBusContract service;
+
+    
     
     @PostConstruct
     void init() throws Exception{
@@ -77,7 +102,65 @@ public class DeviceUtil {
         }else{
         	docColl = docCollz.get(0);
         }
+        
+        //	Service Bus queue
+        service = ServiceBusService.create(config);
 
+    }
+    
+    
+    void showSbusMessagesMessages(){
+    	try
+    	{
+    	    ReceiveMessageOptions opts = ReceiveMessageOptions.DEFAULT;
+    	    //	Leaves messages on Queue
+    	    opts.setReceiveMode(ReceiveMode.PEEK_LOCK);
+
+    	    while(true)  {
+    	         ReceiveQueueMessageResult resultQM =
+    	                 service.receiveQueueMessage("iodemo-queue", opts);
+    	        BrokeredMessage message = resultQM.getValue();
+    	        if (message != null && message.getMessageId() != null)
+    	        {
+    	            System.out.println("MessageID: " + message.getMessageId());
+    	            // Display the queue message.
+    	            System.out.print("From queue: ");
+    	            byte[] b = new byte[200];
+    	            String s = null;
+    	            int numRead = message.getBody().read(b);
+    	            while (-1 != numRead)
+    	            {
+    	                s = new String(b);
+    	                s = s.trim();
+    	                System.out.print(s);
+    	                numRead = message.getBody().read(b);
+    	            }
+    	            System.out.println();
+    	            System.out.println("Custom Property: " +
+    	                message.getProperty("MyProperty"));
+    	            // Remove message from queue.
+    	            System.out.println("Deleting this message.");
+    	            //service.deleteMessage(message);
+    	        }  
+    	        else  
+    	        {
+    	            System.out.println("Finishing up - no more messages.");
+    	            break;
+    	            // Added to handle no more messages.
+    	            // Could instead wait for more messages to be added.
+    	        }
+    	    }
+    	}
+    	catch (ServiceException e) {
+    	    System.out.print("ServiceException encountered: ");
+    	    System.out.println(e.getMessage());
+    	    System.exit(-1);
+    	}
+    	catch (Exception e) {
+    	    System.out.print("Generic exception encountered: ");
+    	    System.out.println(e.getMessage());
+    	    System.exit(-1);
+    	}
     }
 
     void deleteTestDevices() throws Exception {

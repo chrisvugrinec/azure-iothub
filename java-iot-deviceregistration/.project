@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>registration</name>
+  <name>iot-deviceregistration</name>
   <comment>Parent pom providing dependency and plugin management for applications
 		built with Maven. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>

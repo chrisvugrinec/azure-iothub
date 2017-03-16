@@ -41,7 +41,12 @@ public class DeviceController {
     	deviceUtil.deleteTestDevices();
     }
 
+    @RequestMapping(value = "/showMessages", method = RequestMethod.GET)
+    public void showMessages() throws Exception {
+    	deviceUtil.showSbusMessagesMessages();
+    }
 
+    
     @RequestMapping(value = "/deleteAllDevices", method = RequestMethod.GET)
     public void deleteAllDevices() throws Exception {
     	deviceUtil.deleteAllDevices();
