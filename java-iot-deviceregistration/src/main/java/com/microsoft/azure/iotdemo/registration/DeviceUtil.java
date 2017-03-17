@@ -54,6 +54,9 @@ public class DeviceUtil {
     @Value("${sbuskey}")
     private String sbuskey;
 
+    @Value("${sbusqueuename}")
+    private String sbusqueuename;
+
     
 	private static final Logger LOGGER = Logger.getLogger(DeviceUtil.class.getName());
 	private static final String databasename = "devices";
@@ -64,16 +67,8 @@ public class DeviceUtil {
 	private final Gson gson = new Gson();
 
     private static DocumentClient documentClient;
-    Configuration config =
-    	    ServiceBusConfiguration.configureWithSASAuthentication(
-    	    		sbusname,
-    	            "RootManageSharedAccessKey",
-    	            sbuskey,
-    	            ".servicebus.windows.net"
-    	            );
-    private static ServiceBusContract service;
-
-    
+    Configuration config = null;
+    ServiceBusContract service = null;
     
     @PostConstruct
     void init() throws Exception{
@@ -103,22 +98,30 @@ public class DeviceUtil {
         	docColl = docCollz.get(0);
         }
         
-        //	Service Bus queue
-        service = ServiceBusService.create(config);
-
+        //	Service Bus
+       config = ServiceBusConfiguration.configureWithSASAuthentication(
+	    		sbusname,
+	            "RootManageSharedAccessKey",
+	            sbuskey,
+	            ".servicebus.windows.net"
+	            );
+       //	Service Bus queue
+       service = ServiceBusService.create(config);
     }
     
     
+
     void showSbusMessagesMessages(){
     	try
     	{
+    		LOGGER.info("Getting messages from "+sbusname+" with key: "+sbuskey+" from queue: "+sbusqueuename);
     	    ReceiveMessageOptions opts = ReceiveMessageOptions.DEFAULT;
     	    //	Leaves messages on Queue
     	    opts.setReceiveMode(ReceiveMode.PEEK_LOCK);
 
     	    while(true)  {
     	         ReceiveQueueMessageResult resultQM =
-    	                 service.receiveQueueMessage("iodemo-queue", opts);
+    	                 service.receiveQueueMessage(sbusqueuename, opts);
     	        BrokeredMessage message = resultQM.getValue();
     	        if (message != null && message.getMessageId() != null)
     	        {

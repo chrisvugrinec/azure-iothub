@@ -3,3 +3,4 @@ documentDBHost=https://XXXXYOURDBHOSTo-db.documents.azure.com:443/
 documentDBMasterKey=jAYXXXXXYOURDOCDBMASTERKEY
 sbusname=YOURSBUSNAME
 sbuskey=YOURSBUSKEY
+sbusqueuename=YOURQUEUENAME
