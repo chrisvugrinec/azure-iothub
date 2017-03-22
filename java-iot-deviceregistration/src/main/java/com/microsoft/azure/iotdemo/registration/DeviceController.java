@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 @RestController
@@ -44,6 +45,15 @@ public class DeviceController {
     @RequestMapping(value = "/showMessages", method = RequestMethod.GET)
     public void showMessages() throws Exception {
     	deviceUtil.showSbusMessagesMessages();
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    public void test(@RequestBody String deviceRequest) throws Exception {
+    	JsonElement element = gson.fromJson (deviceRequest, JsonElement.class);
+    	JsonObject deviceRequestJ = element.getAsJsonObject();
+    	String payId = deviceRequestJ.getAsJsonObject("papayaModel").get("payeeId").toString();
+    	System.out.println("payeeID: "+payId);
+
     }
 
     
