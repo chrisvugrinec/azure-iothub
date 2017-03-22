@@ -39,6 +39,7 @@
 	"variables": {
 		"artifactsLocationURL": "https://raw.githubusercontent.com/chrisvugrinec/azure-iothub/master/azure-infra",
 		"location": "[resourceGroup().location]",
+                "saCGName": "papaya",
 		"apiVersionDatabaseAccounts": "2015-04-08",
 		"apiVersionIotHubs": "2016-02-03",
 		"apiVersionServiceBus": "2015-08-01",
