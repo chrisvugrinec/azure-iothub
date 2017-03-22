@@ -153,11 +153,10 @@
 			"sku": {
 				"name": "standard"
 			},
-			"outputErrorPolicy": "stop",
-			"eventsOutOfOrderPolicy": "adjust",
-			"eventsOutOfOrderMaxDelayInSeconds": 0,
-			"eventsLateArrivalMaxDelayInSeconds": 5,
-			"dataLocale": "en-US",
+                        "EventsOutOfOrderMaxDelayInSeconds": 10,
+                        "EventsOutOfOrderPolicy": "adjust",
+                        "outputStartMode": "JobStartTime",
+                        "outputStartTime": null,
 			"Inputs": [{
 				"Name": "iotdemo-input",
 				"Properties": {
