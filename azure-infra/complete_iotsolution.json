@@ -39,7 +39,8 @@
   "variables": {
       "artifactsLocationURL": "https://raw.githubusercontent.com/chrisvugrinec/azure-iothub/master/azure-infra",
       "solutionName" : "papaya",
-      "sbName": "[concat(variables('solutionName'),'sb')]",
+      "sbName": "[concat(variables('solutionName'),'sb9999')]",
+      "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
       "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbName'), variables('sbKeyName'))]",
       "sbKeyName": "RootManageSharedAccessKey",
       "location": "[resourceGroup().location]",
