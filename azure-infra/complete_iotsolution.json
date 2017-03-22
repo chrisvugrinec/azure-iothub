@@ -45,7 +45,6 @@
       "sbKeyName": "RootManageSharedAccessKey",
       "location": "[resourceGroup().location]",
       "saCGName": "papaya",
-      "iothubname": "iot-azure-iothub",
       "iotHubName": "[concat(variables('solutionName'), 'hub')]",
       "apiVersionDatabaseAccounts": "2015-04-08",
       "apiVersionIotHubs": "2016-02-03",
@@ -53,7 +52,7 @@
       "apiVersionStreamingJobs": "2016-03-01",
       "iotHubKeyName": "iothubowner",
       "iotHubVersion": "2016-02-03",
-      "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iothubname'), variables('iotHubKeyName'))]",
+      "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
       "sbusName": "iot-azure-servicebus"
   },
   "resources": [
@@ -77,7 +76,7 @@
         },
         {
             "apiVersion": "[variables('apiVersionIotHubs')]",
-            "name": "variables('iothubname')",
+            "name": "variables('iotHubName')",
             "location": "[variables('location')]",
             "type": "Microsoft.Devices/IotHubs",
             "sku": {
