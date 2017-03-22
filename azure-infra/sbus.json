@@ -32,7 +32,20 @@
                 "enabled": true,
                 "updatedAt": "2017-02-23T22:44:20.81Z"
             },
-            "resources": [],
+            "resources": [
+              {
+                  "apiVersion": "2015-08-01",
+                  "name": "papayaqueue",
+                  "type": "Queues",
+                  "dependsOn": [
+                      "[concat('Microsoft.ServiceBus/namespaces/', parameters('sbus_name'))]"
+                  ],
+                   "properties": {
+                  },
+                  "resources": [
+                  ]
+              }
+            ],
             "dependsOn": []
         },
         {

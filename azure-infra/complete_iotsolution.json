@@ -47,7 +47,10 @@
 		"iotHubName": "iot-azure-iothub",
 		"iotHubKeyName": "iothubowner",
 		"iotHubVersion": "2016-02-03",
-		"iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]"
+		"iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
+                "sbVersion": "2015-08-01",
+                "sbKeyName": "RootManageSharedAccessKey",
+                "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', parameters('sbusName'), variables('sbKeyName'))]",
 	},
 	"resources": [{
 		"type": "Microsoft.DocumentDB/databaseAccounts",
@@ -91,7 +94,31 @@
 				}
 			}
 		}
-	}, {
+	},
+{
+      "apiVersion": "[variables('sbVersion')]",
+      "name": "[parameters('serviceBusNamespaceName')]",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      },
+      "resources": [
+        {
+            "apiVersion": "[variables('sbVersion')]",
+            "name": "[parameters('serviceBusQueueName')]",
+            "type": "Queues",
+            "dependsOn": [
+                "[concat('Microsoft.ServiceBus/namespaces/', parameters('serviceBusNamespaceName'))]"
+            ],
+            "properties": {
+            },
+            "resources": [
+            ]
+        }
+      ]
+    }
+
+ {
 		"apiVersion": "[variables('apiVersionServiceBus')]",
 		"name": "iot-azure-servicebus",
 		"location": "[variables('location')]",
@@ -103,7 +130,7 @@
 				"contentVersion": "1.0.0.0"
 			},
 			"parameters": {
-				"sbus_name": {
+				"sbus_name": {,
 					"value": "[parameters('sbusName')]"
 				},
 				"location": {
@@ -161,6 +188,29 @@
 					"Type": "Stream"
 				}
 			}],
+        "Outputs": [
+          {
+            "Name": "iotdemo-output",
+            "Properties": {
+              "DataSource": {
+                "Properties": {
+                  "ServiceBusNamespace": "[parameters('sbusName')]",
+                  "SharedAccessPolicyKey": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryKey]",
+                  "SharedAccessPolicyName": "[variables('sbKeyName')]",
+                  "PartitionKey": "PartitionId"
+                },
+                "Type": "Microsoft.ServiceBus/EventHub"
+              },
+              "Serialization": {
+                "Properties": {
+                  "Encoding": "UTF8",
+                  "Format": "Array"
+                },
+                "Type": "Json"
+              }
+            }
+          }
+        ],
 			"transformation": {
 				"name": "Transformation",
 				"properties": {
