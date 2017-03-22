@@ -43,7 +43,7 @@
 		"apiVersionIotHubs": "2016-02-03",
 		"apiVersionServiceBus": "2015-08-01",
 		"apiVersionStreamingJobs": "2016-03-01",
-		"iot-azure-iothub": "iot-azure-iothub",
+		"iotHubName": "iot-azure-iothub",
 		"iotHubKeyName": "iothubowner",
 		"iotHubVersion": "2016-02-03",
 		"iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]"
@@ -67,7 +67,7 @@
 		"dependsOn": []
 	}, {
 		"apiVersion": "[variables('apiVersionIotHubs')]",
-		"name": "[variables('iot-azure-iothub')]",
+		"name": "[variables('iotHubName')]",
 		"location": "[variables('location')]",
 		"type": "Microsoft.Devices/IotHubs",
 		"sku": {
@@ -116,7 +116,7 @@
 		"name": "[parameters('streamanalyticsJobname')]",
 		"location": "[variables('location')]",
 		"dependsOn": [
-			"[concat('Microsoft.Devices/Iothubs/', variables('iot-azure-iothub'))]"
+			"[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
 		],
 		"properties": {
 			"sku": {
@@ -132,7 +132,7 @@
 				"Properties": {
 					"DataSource": {
 						"Properties": {
-							"iotHubNamespace": "[variables('iot-azure-iothub')]",
+							"iotHubNamespace": "[variables('iotHubName')]",
 							"sharedAccessPolicyKey": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]",
 							"sharedAccessPolicyName": "[variables('iotHubKeyName')]"
 						},
