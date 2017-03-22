@@ -2,6 +2,25 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
   "parameters": {
+   "region": {
+      "type": "string",
+      "allowedValues": [
+        "East US",
+        "West US",
+        "North Europe",
+        "West Europe",
+        "East Asia",
+        "South East Asia",
+        "Japan East",
+        "Japan West",
+        "Australia East",
+        "Australia SouthEast",
+        "North Europe"
+      ],
+      "metadata": {
+        "description": "The Region to deploy the solution to"
+      }
+    },
     "solutionName": {
       "type": "string",
       "maxLength": 16,
@@ -35,7 +54,7 @@
 
   },
   "variables": {
-    "location": "[resourceGroup().location]",
+    "location": "[parameters('region')]",
     "storageVersion": "2015-06-15",
     "storageName": "[concat(parameters('solutionName'), 'storage')]",
     "storageId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
@@ -65,6 +84,18 @@
   },
   "resources": [
     {
+      "apiVersion": "[variables('storageVersion')]",
+      "location": "[variables('location')]",
+      "name": "[variables('storageName')]",
+      "properties": {
+        "accountType": "[variables('storageAccountSku')]"
+      },
+      "type": "Microsoft.Storage/storageAccounts",
+      "tags": {
+        "displayName": "storage"
+      }
+    },
+    {
       "apiVersion": "[variables('iotHubVersion')]",
       "type": "Microsoft.Devices/Iothubs",
       "name": "[variables('iotHubName')]",
@@ -81,6 +112,39 @@
         "displayName": "IoTHub"
       },
       "resources": [
+        {
+          "apiVersion": "[variables('iotHubVersion')]",
+          "name": "[concat(variables('iotHubName'), '/events/', variables('websiteCGName'))]",
+          "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
+          "dependsOn": [
+            "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
+          ],
+          "tags": {
+            "displayName": "Website Consumer Group"
+          }
+        },
+        {
+          "apiVersion": "[variables('iotHubVersion')]",
+          "name": "[concat(variables('iotHubName'), '/events/', 'debug')]",
+          "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
+          "dependsOn": [
+            "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
+          ],
+          "tags": {
+            "displayName": "Debug Consumer Group"
+          }
+        },
+        {
+          "apiVersion": "[variables('iotHubVersion')]",
+          "name": "[concat(variables('iotHubName'), '/events/', variables('saCGName'))]",
+          "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
+          "dependsOn": [
+            "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
+          ],
+          "tags": {
+            "displayName": "Stream Analytics Consumer Group"
+          }
+        }
       ]
     },
 
@@ -113,6 +177,29 @@
             "displayName": "Alerts Event Hub"
           },
           "resources": [
+            {
+              "apiVersion": "[variables('sbVersion')]",
+              "name": "[variables('websiteCGName')]",
+              "type": "ConsumerGroups",
+              "dependsOn": [
+                "[variables('ehOutName')]"
+              ],
+              "tags": {
+                "displayName": "Website Consumer Group"
+              }
+            },
+            {
+              "apiVersion": "[variables('sbVersion')]",
+              "name": "debug",
+              "type": "ConsumerGroups",
+              "dependsOn": [
+                "[variables('ehOutName')]"
+              ],
+              "tags": {
+                "displayName": "Debug Consumer Group"
+              }
+            }
+
           ]
 
         }
@@ -142,10 +229,11 @@
         "outputStartTime": null,
         "Inputs": [
           {
-            "Name": "iot-input",
+            "Name": "IoTHubStream",
             "Properties": {
               "DataSource": {
                 "Properties": {
+                  "consumerGroupName": "[variables('saCGName')]",
                   "iotHubNamespace": "[variables('iotHubName')]",
                   "sharedAccessPolicyKey": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]",
                   "sharedAccessPolicyName": "[variables('iotHubKeyName')]"
@@ -164,7 +252,7 @@
         ],
         "Outputs": [
           {
-            "Name": "iot-output",
+            "Name": "DeviceInfoEvents",
             "Properties": {
               "DataSource": {
                 "Properties": {
@@ -187,14 +275,118 @@
           }
         ],
         "Transformation": {
-          "Name": "toSbqQeue",
+          "Name": "AllToBlob",
           "Properties": {
-            "query": "SELECT\r\n    *\r\nINTO\r\n    [iot-output]\r\nFROM\r\n    [iot-input]",
+            "Query": "SELECT \r\n    'TempSpike' AS alerttype, \r\n    'Temperature over 80F' AS message, \r\n    displayname,\r\n    guid,\r\n    measurename,\r\n    unitofmeasure,\r\n    location,\r\n    organization,\r\n    MIN(timecreated) AS timecreated,\r\n    MAX(value) AS tempMax,\r\n    MAX(value) AS value\r\nINTO\r\n    DeviceInfoEvents\r\nFROM \r\n    IoTHubStream TIMESTAMP BY timecreated\r\nWHERE\r\n    measurename = 'temperature' OR measurename = 'Temperature'\r\nGROUP BY \r\n    displayname, guid, measurename, unitofmeasure, location, organization,\r\n    TumblingWindow(Second, 5)\r\n HAVING\r\n   tempMax > 80",
             "StreamingUnits": 1
           }
         }
       }
-    }
+    },
+    {
+      "apiVersion": "[variables('webVersion')]",
+      "name": "[variables('webPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "Web Plan"
+      },
+      "properties": {
+        "name": "[variables('webPlanName')]",
+        "sku": "[variables('webSku')]",
+        "workerSize": "[variables('webWorkerSize')]",
+        "numberOfWorkers": "[variables('webWorkerCount')]"
+      }
+    },
+      {
+          "name": "[variables('webSiteName')]",
+          "type": "Microsoft.Web/sites",
+          "location": "[variables('location')]",
+          "apiVersion": "[variables('webVersion')]",
+        "dependsOn": [
+          "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
+          "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]",
+          "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]",
+          "[variables('ehOutName')]",
+          "[variables('websiteCGName')]",
+          "[concat('Microsoft.Web/serverfarms/', variables('webPlanName'))]",
+          "[concat('Microsoft.StreamAnalytics/streamingjobs/', variables('saName'))]"
+        ],
+          "tags": {
+              "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', variables('webPlanName'))]": "Resource",
+              "displayName": "DashboardWebApp"
+          },
+          "properties": {
+              "name": "[variables('WebSiteName')]",
+              "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('webPlanName'))]",
+              "siteConfig": {
+                  "AlwaysOn": true,
+                  "WebsocketsEnabled": true,
+                  "appSettings": [
+                    {
+                      "name": "Azure.IoT.IoTHub.ConnectionString",
+                      "value": "[concat('HostName=', reference(variables('iotHubResourceId')).hostName, ';SharedAccessKeyName=', variables('iotHubKeyName'), ';SharedAccessKey=', listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey)]"
+                    },
+                    {
+                      "name": "Azure.IoT.IoTHub.EventHub.Name",
+                      "value": "[reference(variables('iotHubResourceId')).eventHubEndpoints.events.path]"
+                    },
+                    {
+                      "name": "Azure.IoT.IoTHub.EventHub.ConnectionString",
+                      "value": "[concat('Endpoint=', reference(variables('iotHubResourceId')).eventHubEndpoints.events.endpoint, ';SharedAccessKeyName=', variables('iotHubKeyName'), ';SharedAccessKey=', listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey)]"
+                    },
+                    {
+                      "name": "Azure.IoT.IoTHub.EventHub.ConsumerGroup",
+                      "value": "[variables('websiteCGName')]"
+                    },
+                    {
+                      "name": "Azure.ServiceBus.EventHub.Name",
+                      "value": "[variables('ehOutName')]"
+                    },
+                    {
+                      "name": "Azure.ServiceBus.EventHub.ConnectionString",
+                      "value": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryConnectionString]"
+                    },
+                    {
+                      "name": "Azure.ServiceBus.EventHub.ConsumerGroup",
+                      "value": "[variables('websiteCGName')]"
+                    },
+                    {
+                      "name": "Azure.Storage.ConnectionString",
+                      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', listkeys(variables('storageId'), variables('storageVersion')).key1)]"
+                    },
+                    {
+                      "name": "AdminName",
+                      "value": "[parameters('adminName')]"
+                    },
+                    {
+                      "name": "ObjectTypePrefix",
+                      "value": ""
+                    },
+                    {
+                      "name": "SolutionName",
+                      "value": "[variables('webSiteName')]"
+                    }
+                  ]
+              }
+          },
+          "resources": [
+            {
+
+              "apiVersion":"[variables('webVersion')]",
+              "name":"web",
+              "type":"sourcecontrols",
+              "dependsOn":[
+                "[concat('Microsoft.Web/sites/', variables('webSiteName'))]"
+              ],
+              "properties":{
+                "repoUrl":"[parameters('repoUrl')]",
+                "branch":"[parameters('branch')]",
+                "isManualIntegration": true
+              }
+            }
+          ]
+      }
   ],
   "outputs": {
     "iotHubConnectionString": {
@@ -209,6 +401,10 @@
       "type": "string",
       "value": "[concat('Endpoint=', reference(variables('iotHubResourceId')).eventHubEndpoints.events.endpoint, ';SharedAccessKeyName=', variables('iotHubKeyName'), ';SharedAccessKey=', listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey)]"
     },
+    "Azure.IoT.IoTHub.EventHub.ConsumerGroup": {
+      "type": "string",
+      "value": "[variables('websiteCGName')]"
+    },
     "Azure.ServiceBus.EventHub.Name": {
       "type": "string",
       "value": "[variables('ehOutName')]"
@@ -216,6 +412,14 @@
     "Azure.ServiceBus.EventHub.ConnectionString": {
       "type": "string",
       "value": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryConnectionString]"
+    },
+    "Azure.ServiceBus.EventHub.ConsumerGroup": {
+      "type": "string",
+      "value": "[variables('websiteCGName')]"
+    },
+    "Azure.Storage.ConnectionString": {
+      "type": "string",
+      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', listkeys(variables('storageId'), variables('storageVersion')).key1)]"
     }
   }
 }
