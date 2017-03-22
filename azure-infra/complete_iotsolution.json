@@ -1,156 +1,159 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
-  "contentVersion": "1.1.0.0",
-  "parameters": {
-        "databaseAccountsName": {
-            "type": "String"
-        },
-        "iothubName": {
-            "type": "String"
-        },
-        "sbusName": {
-            "type": "String"
-        },
-        "streamanalyticsJobname": {
-            "type": "String"
-        },
-        "streamanalyticsNumberOfStreamingUnits": {
-           "type": "int",
-           "minValue": 1,
-           "maxValue": 48,
-           "defaultValue": 3,
-           "allowedValues": [
-              1,
-              3,
-              6,
-              12,
-              18,
-              24,
-              30,
-              36,
-              42,
-              48
-           ],
-           "metadata": {
-              "description": "Number of Streaming Units"
-           }
-       }
-  },
-  "variables": {
-      "artifactsLocationURL": "https://raw.githubusercontent.com/chrisvugrinec/azure-iothub/master/azure-infra",
-      "location": "[resourceGroup().location]",
-      "apiVersionDatabaseAccounts": "2015-04-08",
-      "apiVersionIotHubs": "2016-02-03",
-      "apiVersionServiceBus": "2015-08-01",
-      "apiVersionStreamingJobs": "2016-03-01",
-      "iot-azure-iothub": "iot-azure-iothub",
-      "iotHubKeyName": "iothubowner",
-      "iotHubVersion": "2016-02-03",
-      "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]"
-  },
-  "resources": [
-        {
-            "type": "Microsoft.DocumentDB/databaseAccounts",
-            "kind": "GlobalDocumentDB",
-            "name": "[parameters('databaseAccountsName')]",
-            "apiVersion": "2015-04-08",
-            "location": "[variables('location')]",
-            "tags": {},
-            "properties": {
-                "databaseAccountOfferType": "Standard",
-                "consistencyPolicy": {
-                    "defaultConsistencyLevel": "Session",
-                    "maxIntervalInSeconds": 5,
-                    "maxStalenessPrefix": 100
-                },
-                "name": "[parameters('databaseAccountsName')]"
-            },
-            "dependsOn": []
-        },
-        {
-            "apiVersion": "[variables('apiVersionIotHubs')]",
-            "name": "[variables('iot-azure-iothub')]",
-            "location": "[variables('location')]",
-            "type": "Microsoft.Devices/IotHubs",
-            "sku": {
-                "name": "F1",
-                "tier": "Free",
-                "capacity": 1
-            },
-            "properties": {
-               "mode": "Incremental",
-               "templateLink": {
-               "uri": "[concat(variables('artifactsLocationURL'), '/iothub.json')]",
-               "contentVersion": "1.0.0.0"
-            },
-            "parameters": {
-               "iothub_name": {"value": "[parameters('iothubName')]"},
-               "location": {"value": "[variables('location')]"}
-            }
-        }
-    },
-    {
-      "apiVersion": "[variables('apiVersionServiceBus')]",
-      "name": "iot-azure-servicebus",
-      "location": "[variables('location')]",
-      "type": "Microsoft.ServiceBus/namespaces",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('artifactsLocationURL'), '/sbus.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "sbus_name": {"value": "[parameters('sbusName')]"},
-          "location": {"value": "[variables('location')]"}
-        }
-      }
-    },
-    {
-      "type": "Microsoft.StreamAnalytics/StreamingJobs",
-      "apiVersion": "2016-03-01",
-      "name": "[parameters('streamanalyticsJobname')]",
-      "location": "[variables('location')]",
-      "properties": {
-        "sku": {
-          "name": "standard"
-        },
-        "outputErrorPolicy": "stop",
-        "eventsOutOfOrderPolicy": "adjust",
-        "eventsOutOfOrderMaxDelayInSeconds": 0,
-        "eventsLateArrivalMaxDelayInSeconds": 5,
-        "dataLocale": "en-US",
-        "Inputs": [
-          {
-            "Name": "iotdemo-input",
-            "Properties": {
-              "DataSource": {
-                "Properties": {
-                  "iotHubNamespace": "[variables('iot-azure-iothub')]",
-                  "sharedAccessPolicyKey": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]",
-                  "sharedAccessPolicyName": "[variables('iotHubKeyName')]"
-                },
-                "Type": "Microsoft.Devices/IotHubs"
-              },
-              "Serialization": {
-                "Properties": {
-                  "Encoding": "UTF8"
-                },
-                "Type": "Json"
-              },
-              "Type": "Stream"
-            }
-          }
-        ],
-        "transformation": {
-          "name": "Transformation",
-          "properties": {
-            "streamingUnits": "[parameters('streamanalyticsNumberOfStreamingUnits')]",
-            "query": "SELECT\r\n    *\r\nINTO\r\n    [iotdemo-output]\r\nFROM\r\n    [iotdemo-input]"
-          }
-        }
-      },
-      "dependsOn": [concat('Microsoft.Devices/IotHubs/', variables('iot-azure-iothub') )]
-    }
-  ]
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+	"contentVersion": "1.1.0.0",
+	"parameters": {
+		"databaseAccountsName": {
+			"type": "String"
+		},
+		"iothubName": {
+			"type": "String"
+		},
+		"sbusName": {
+			"type": "String"
+		},
+		"streamanalyticsJobname": {
+			"type": "String"
+		},
+		"streamanalyticsNumberOfStreamingUnits": {
+			"type": "int",
+			"minValue": 1,
+			"maxValue": 48,
+			"defaultValue": 3,
+			"allowedValues": [
+				1,
+				3,
+				6,
+				12,
+				18,
+				24,
+				30,
+				36,
+				42,
+				48
+			],
+			"metadata": {
+				"description": "Number of Streaming Units"
+			}
+		}
+	},
+	"variables": {
+		"artifactsLocationURL": "https://raw.githubusercontent.com/chrisvugrinec/azure-iothub/master/azure-infra",
+		"location": "[resourceGroup().location]",
+		"apiVersionDatabaseAccounts": "2015-04-08",
+		"apiVersionIotHubs": "2016-02-03",
+		"apiVersionServiceBus": "2015-08-01",
+		"apiVersionStreamingJobs": "2016-03-01",
+		"iot-azure-iothub": "iot-azure-iothub",
+		"iotHubKeyName": "iothubowner",
+		"iotHubVersion": "2016-02-03",
+		"iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]"
+	},
+	"resources": [{
+		"type": "Microsoft.DocumentDB/databaseAccounts",
+		"kind": "GlobalDocumentDB",
+		"name": "[parameters('databaseAccountsName')]",
+		"apiVersion": "2015-04-08",
+		"location": "[variables('location')]",
+		"tags": {},
+		"properties": {
+			"databaseAccountOfferType": "Standard",
+			"consistencyPolicy": {
+				"defaultConsistencyLevel": "Session",
+				"maxIntervalInSeconds": 5,
+				"maxStalenessPrefix": 100
+			},
+			"name": "[parameters('databaseAccountsName')]"
+		},
+		"dependsOn": []
+	}, {
+		"apiVersion": "[variables('apiVersionIotHubs')]",
+		"name": "[variables('iot-azure-iothub')]",
+		"location": "[variables('location')]",
+		"type": "Microsoft.Devices/IotHubs",
+		"sku": {
+			"name": "F1",
+			"tier": "Free",
+			"capacity": 1
+		},
+		"properties": {
+			"mode": "Incremental",
+			"templateLink": {
+				"uri": "[concat(variables('artifactsLocationURL'), '/iothub.json')]",
+				"contentVersion": "1.0.0.0"
+			},
+			"parameters": {
+				"iothub_name": {
+					"value": "[parameters('iothubName')]"
+				},
+				"location": {
+					"value": "[variables('location')]"
+				}
+			}
+		}
+	}, {
+		"apiVersion": "[variables('apiVersionServiceBus')]",
+		"name": "iot-azure-servicebus",
+		"location": "[variables('location')]",
+		"type": "Microsoft.ServiceBus/namespaces",
+		"properties": {
+			"mode": "Incremental",
+			"templateLink": {
+				"uri": "[concat(variables('artifactsLocationURL'), '/sbus.json')]",
+				"contentVersion": "1.0.0.0"
+			},
+			"parameters": {
+				"sbus_name": {
+					"value": "[parameters('sbusName')]"
+				},
+				"location": {
+					"value": "[variables('location')]"
+				}
+			}
+		}
+	}, {
+		"type": "Microsoft.StreamAnalytics/StreamingJobs",
+		"apiVersion": "2016-03-01",
+		"name": "[parameters('streamanalyticsJobname')]",
+		"location": "[variables('location')]",
+		"dependsOn": [
+			"[concat('Microsoft.Devices/Iothubs/', variables('iot-azure-iothub'))]"
+		],
+		"properties": {
+			"sku": {
+				"name": "standard"
+			},
+			"outputErrorPolicy": "stop",
+			"eventsOutOfOrderPolicy": "adjust",
+			"eventsOutOfOrderMaxDelayInSeconds": 0,
+			"eventsLateArrivalMaxDelayInSeconds": 5,
+			"dataLocale": "en-US",
+			"Inputs": [{
+				"Name": "iotdemo-input",
+				"Properties": {
+					"DataSource": {
+						"Properties": {
+							"iotHubNamespace": "[variables('iot-azure-iothub')]",
+							"sharedAccessPolicyKey": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]",
+							"sharedAccessPolicyName": "[variables('iotHubKeyName')]"
+						},
+						"Type": "Microsoft.Devices/IotHubs"
+					},
+					"Serialization": {
+						"Properties": {
+							"Encoding": "UTF8"
+						},
+						"Type": "Json"
+					},
+					"Type": "Stream"
+				}
+			}],
+			"transformation": {
+				"name": "Transformation",
+				"properties": {
+					"streamingUnits": "[parameters('streamanalyticsNumberOfStreamingUnits')]",
+					"query": "SELECT\r\n    *\r\nINTO\r\n    [iotdemo-output]\r\nFROM\r\n    [iotdemo-input]"
+				}
+			}
+		}
+	}]
 }
