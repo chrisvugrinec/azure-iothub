@@ -50,7 +50,7 @@
 		"iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
                 "sbVersion": "2015-08-01",
                 "sbKeyName": "RootManageSharedAccessKey",
-                "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', parameters('sbusName'), variables('sbKeyName'))]",
+                "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', parameters('sbusName'), variables('sbKeyName'))]"
 	},
 	"resources": [{
 		"type": "Microsoft.DocumentDB/databaseAccounts",
@@ -116,7 +116,7 @@
             ]
         }
       ]
-    }
+    },
 
  {
 		"apiVersion": "[variables('apiVersionServiceBus')]",
@@ -130,7 +130,7 @@
 				"contentVersion": "1.0.0.0"
 			},
 			"parameters": {
-				"sbus_name": {,
+				"sbus_name": {
 					"value": "[parameters('sbusName')]"
 				},
 				"location": {
