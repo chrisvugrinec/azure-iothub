@@ -189,7 +189,7 @@
         "Transformation": {
           "Name": "toSbqQeue",
           "Properties": {
-            "query": "SELECT\r\n    *\r\nINTO\r\n    [iot-output]\r\nFROM\r\n    [iot-input]"
+            "query": "SELECT\r\n    *\r\nINTO\r\n    [iot-output]\r\nFROM\r\n    [iot-input]",
             "StreamingUnits": 1
           }
         }
