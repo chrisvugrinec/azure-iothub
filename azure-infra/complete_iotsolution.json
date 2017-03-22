@@ -110,7 +110,20 @@
 				}
 			}
 		}
-	}, {
+	},
+       {
+          "apiVersion": "[variables('iotHubVersion')]",
+          "name": "[concat(variables('iotHubName'), '/events/', variables('saCGName'))]",
+          "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
+          "dependsOn": [
+            "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
+          ],
+          "tags": {
+            "displayName": "Stream Analytics Consumer Group"
+          }
+        },
+
+ {
 		"type": "Microsoft.StreamAnalytics/StreamingJobs",
 		"apiVersion": "2016-03-01",
 		"name": "[parameters('streamanalyticsJobname')]",
