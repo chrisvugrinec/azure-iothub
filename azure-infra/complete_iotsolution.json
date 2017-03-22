@@ -116,7 +116,7 @@
 			}
 		}
 	},
-       {
+        {
           "apiVersion": "[variables('iotHubVersion')]",
           "name": "[concat(variables('iotHubName'), '/events/', variables('saCGName'))]",
           "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
@@ -127,7 +127,20 @@
             "displayName": "Stream Analytics Consumer Group"
           }
         },
-
+        {
+          "apiVersion": "[variables('sbVersion')]",
+          "name": "[parameters('sbusName')]",
+          "type": "Microsoft.Eventhub/namespaces",
+          "location": "[variables('location')]",
+          "properties": {
+            "messagingSku": "1",
+            "region": "[variables('location')]"
+          },
+          "tags": {
+            "displayName": "Service Bus"
+          },
+        "resources": []
+        },
  {
 		"type": "Microsoft.StreamAnalytics/StreamingJobs",
 		"apiVersion": "2016-03-01",
