@@ -1,207 +1,265 @@
 {
-	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-	"contentVersion": "1.0.0.0",
-	"parameters": {
-		"IotHubs_chrixhub_name": {
-			"defaultValue": "chrixhub",
-			"type": "String"
-		},
-		"namespaces_chrixsb_name": {
-			"defaultValue": "chrixsb",
-			"type": "String"
-		},
-		"AuthorizationRules_RootManageSharedAccessKey_name": {
-			"defaultValue": "chrixsb/RootManageSharedAccessKey",
-			"type": "String"
-		},
-		"eventhubs_ehalerts_name": {
-			"defaultValue": "chrixsb/ehalerts",
-			"type": "String"
-		}
-	},
-	"variables": {},
-	"resources": [{
-			"type": "Microsoft.Devices/IotHubs",
-			"sku": {
-				"name": "S1",
-				"tier": "Standard",
-				"capacity": 1
-			},
-			"name": "[parameters('IotHubs_chrixhub_name')]",
-			"apiVersion": "2016-02-03",
-			"location": "North Europe",
-			"tags": {
-				"displayName": "IoTHub"
-			},
-			"properties": {
-				"ipFilterRules": [],
-				"eventHubEndpoints": {
-					"events": {
-						"retentionTimeInDays": 1,
-						"partitionCount": 4,
-						"partitionIds": [
-							"0",
-							"1",
-							"2",
-							"3"
-						],
-						"path": "[parameters('IotHubs_chrixhub_name')]",
-						"endpoint": "[concat('sb://iothub-ns-', parameters('IotHubs_chrixhub_name'),'-132746-cb93e69044.servicebus.windows.net/')]"
-					},
-					"operationsMonitoringEvents": {
-						"retentionTimeInDays": 1,
-						"partitionCount": 4,
-						"partitionIds": [
-							"0",
-							"1",
-							"2",
-							"3"
-						],
-						"path": "[concat(parameters('IotHubs_chrixhub_name'),'-operationmonitoring')]",
-						"endpoint": "[concat('sb://iothub-ns-', parameters('IotHubs_chrixhub_name'),'-132746-cb93e69044.servicebus.windows.net/')]"
-					}
-				},
-				"routing": {
-					"endpoints": {
-						"serviceBusQueues": [],
-						"serviceBusTopics": [],
-						"eventHubs": []
-					},
-					"routes": [],
-					"fallbackRoute": {
-						"name": "$fallback",
-						"source": "DeviceMessages",
-						"condition": "true",
-						"endpointNames": [
-							"events"
-						],
-						"isEnabled": true
-					}
-				},
-				"storageEndpoints": {
-					"$default": {
-						"sasTtlAsIso8601": "PT1H",
-						"connectionString": "",
-						"containerName": ""
-					}
-				},
-				"enableFileUploadNotifications": false,
-				"cloudToDevice": {
-					"maxDeliveryCount": 10,
-					"defaultTtlAsIso8601": "PT1H",
-					"feedback": {
-						"lockDurationAsIso8601": "PT1M",
-						"ttlAsIso8601": "PT1H",
-						"maxDeliveryCount": 10
-					}
-				},
-				"operationsMonitoringProperties": {
-					"events": {
-						"None": "None",
-						"Connections": "None",
-						"DeviceTelemetry": "None",
-						"C2DCommands": "None",
-						"DeviceIdentityOperations": "None",
-						"FileUploadOperations": "None",
-						"Routes": "None"
-					}
-				},
-				"features": "None"
-			},
-			"dependsOn": []
-		}, {
-			"type": "Microsoft.Eventhub/namespaces",
-			"sku": {
-				"name": "Standard",
-				"tier": "Standard",
-				"capacity": 1
-			},
-			"kind": "EventHub",
-			"name": "[parameters('namespaces_chrixsb_name')]",
-			"apiVersion": "2015-08-01",
-			"location": "North Europe",
-			"tags": {
-				"displayName": "Service Bus"
-			},
-			"properties": {
-				"provisioningState": "Succeeded",
-				"status": "Active",
-				"createdAt": "2017-03-23T08:19:49.707Z",
-				"serviceBusEndpoint": "[concat('https://', parameters('namespaces_chrixsb_name'),'.servicebus.windows.net:443/')]",
-				"enabled": true,
-				"updatedAt": "2017-03-23T08:20:15.377Z"
-			},
-			"dependsOn": []
-		}, {
-			"type": "Microsoft.Eventhub/namespaces/AuthorizationRules",
-			"name": "[parameters('AuthorizationRules_RootManageSharedAccessKey_name')]",
-			"apiVersion": "2015-08-01",
-			"properties": {
-				"rights": [
-					"Listen",
-					"Manage",
-					"Send"
-				]
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Eventhub/namespaces', parameters('namespaces_chrixsb_name'))]"
-			]
-		}, {
-			"type": "Microsoft.Eventhub/namespaces/eventhubs",
-			"name": "[parameters('eventhubs_ehalerts_name')]",
-			"apiVersion": "2015-08-01",
-			"location": "North Europe",
-			"properties": {
-				"messageRetentionInDays": 1,
-				"status": "Active",
-				"createdAt": "2017-03-23T08:20:31.657",
-				"updatedAt": "2017-03-23T08:20:39.91",
-				"partitionCount": 4,
-				"partitionIds": [
-					"0",
-					"1",
-					"2",
-					"3"
-				]
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Eventhub/namespaces', parameters('namespaces_chrixsb_name'))]"
-			]
-		}, {
-			"type": "Microsoft.Eventhub/namespaces/eventhubs/consumergroups",
-			"name": "[parameters('eventhubs_ehalerts_name')]",
-			"apiVersion": "2015-08-01",
-			"location": "North Europe",
-			"properties": {
-				"createdAt": "2017-03-23T08:20:37.4410123",
-				"updatedAt": "2017-03-23T08:20:37.4410123"
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Eventhub/namespaces', parameters('namespaces_chrixsb_name'))]",
-				"[resourceId('Microsoft.Eventhub/namespaces/eventhubs', parameters('eventhubs_ehalerts_name'))]"
-			]
-		},{
-			"apiVersion": "2015-08-01",
-			"name": "[concat(parameters('namespaces_chrixsb_name'),'sbq')]",
-			"type": "Microsoft.ServiceBus/Namespaces",
-			"location": "[variables('location')]",
-			"kind": "Messaging",
-			"sku": {
-				"name": "StandardSku",
-				"tier": "Standard"
-			},
-			"resources": [{
-				"apiVersion": "2015-08-01",
-				"name": "[concat(parameters('namespaces_chrixsb_name'),'queue')]",
-				"type": "Queues",
-				"dependsOn": [
-					"[concat('Microsoft.ServiceBus/namespaces/', concat(parameters('namespaces_chrixsb_name'),'sbq')    )]"
-				]
-			}]
-		}
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+   "region": {
+      "type": "string",
+      "allowedValues": [
+        "East US",
+        "West US",
+        "North Europe",
+        "West Europe",
+        "East Asia",
+        "South East Asia",
+        "Japan East",
+        "Japan West",
+        "Australia East",
+        "Australia SouthEast",
+        "North Europe"
+      ],
+      "metadata": {
+        "description": "The Region to deploy the solution to"
+      }
+    },
+    "solutionName": {
+      "type": "string",
+      "maxLength": 16,
+      "metadata": {
+        "description": "The name of your ConnectTheDots solution (will be used to prefix the services names)"
+      }
+    },
+    "iotHubSku": {
+      "type": "string",
+      "allowedValues": [
+        "F1",
+        "S1",
+        "S2"
+      ],
+      "defaultValue": "S1",
+      "metadata": {
+        "description": "The Iothub Sku"
+      }
+    },
+    "adminName": {
+      "type": "string"
+    },
+    "repoUrl": {
+      "type": "string",
+      "defaultValue": "https://github.com/Azure/connectthedots"
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "master"
+    }
 
+  },
+  "variables": {
+    "location": "[parameters('region')]",
+    "storageVersion": "2015-06-15",
+    "storageName": "[concat(parameters('solutionName'), 'storage')]",
+    "storageId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
+    "storageAccountSku": "Standard_LRS",
+    "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
+    "ehOutName": "ehalerts",
+    "sbKeyName": "RootManageSharedAccessKey",
+    "sbSku": 1,
+    "sbName": "[concat(parameters('solutionName'),'sb')]",
+    "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbName'), variables('sbKeyName'))]",
+    "saVersion": "2015-10-01",
+    "saName": "[concat(parameters('solutionName'), 'alerts')]",
+    "webVersion": "2015-04-01",
+    "webPlanName": "[concat(parameters('solutionName'), 'plan')]",
+    "webSiteName": "[parameters('solutionName')]",
+    "iotHubVersion": "2016-02-03",
+    "iotHubTier": "Standard",
+    "iotHubName": "[concat(parameters('solutionName'), 'hub')]",
+    "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
+    "iotHubKeyName": "iothubowner",
+    "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
+    "saCGName": "streamanalyticscg",
+    "websiteCGName": "websitecg",
+    "webSku": "Standard",
+    "webWorkerCount": 2,
+    "webWorkerSize": 0
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('storageVersion')]",
+      "location": "[variables('location')]",
+      "name": "[variables('storageName')]",
+      "properties": {
+        "accountType": "[variables('storageAccountSku')]"
+      },
+      "type": "Microsoft.Storage/storageAccounts",
+      "tags": {
+        "displayName": "storage"
+      }
+    },
+    {
+      "apiVersion": "[variables('iotHubVersion')]",
+      "type": "Microsoft.Devices/Iothubs",
+      "name": "[variables('iotHubName')]",
+      "location": "[variables('location')]",
+      "sku": {
+        "name": "[parameters('iotHubSku')]",
+        "tier": "[variables('iotHubTier')]",
+        "capacity": 1
+      },
+      "properties": {
+        "location": "[variables('location')]"
+      },
+      "tags": {
+        "displayName": "IoTHub"
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('iotHubVersion')]",
+          "name": "[concat(variables('iotHubName'), '/events/', variables('saCGName'))]",
+          "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
+          "dependsOn": [
+            "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
+          ],
+          "tags": {
+            "displayName": "Stream Analytics Consumer Group"
+          }
+        }
+      ]
+    },
 
+    {
+      "apiVersion": "[variables('sbVersion')]",
+      "name": "[variables('sbName')]",
+      "type": "Microsoft.Eventhub/namespaces",
+      "location": "[variables('location')]",
+      "properties": {
+        "messagingSku": "[variables('sbSku')]",
+        "region": "[variables('location')]"
+      },
+      "tags": {
+        "displayName": "Service Bus"
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('sbVersion')]",
+          "name": "[variables('ehOutName')]",
+          "type": "eventHubs",
+          "location": "[variables('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]"
+          ],
+          "properties": {
+            "path": "[variables('ehOutName')]",
+            "MessageRetentionInDays": 1
+          },
+          "tags": {
+            "displayName": "Alerts Event Hub"
+          },
+          "resources": [
+            {
+              "apiVersion": "[variables('sbVersion')]",
+              "name": "[variables('websiteCGName')]",
+              "type": "ConsumerGroups",
+              "dependsOn": [
+                "[variables('ehOutName')]"
+              ],
+              "tags": {
+                "displayName": "Website Consumer Group"
+              }
+            },
+            {
+              "apiVersion": "[variables('sbVersion')]",
+              "name": "debug",
+              "type": "ConsumerGroups",
+              "dependsOn": [
+                "[variables('ehOutName')]"
+              ],
+              "tags": {
+                "displayName": "Debug Consumer Group"
+              }
+            }
 
+          ]
 
-	]
+        }
+      ]
+    },
+    {
+      "apiVersion": "[variables('saVersion')]",
+      "type": "Microsoft.StreamAnalytics/streamingjobs",
+      "name": "[variables('saName')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
+        "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]",
+        "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]"
+
+      ],
+      "tags": {
+        "displayName": "Stream Analytics Job"
+      },
+      "properties": {
+        "sku": {
+          "name": "standard"
+        },
+        "EventsOutOfOrderMaxDelayInSeconds": 10,
+        "EventsOutOfOrderPolicy": "adjust",
+        "outputStartMode": "JobStartTime",
+        "outputStartTime": null,
+        "Inputs": [
+          {
+            "Name": "IoTHubStream",
+            "Properties": {
+              "DataSource": {
+                "Properties": {
+                  "consumerGroupName": "[variables('saCGName')]",
+                  "iotHubNamespace": "[variables('iotHubName')]",
+                  "sharedAccessPolicyKey": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]",
+                  "sharedAccessPolicyName": "[variables('iotHubKeyName')]"
+                },
+                "Type": "Microsoft.Devices/IotHubs"
+              },
+              "Serialization": {
+                "Properties": {
+                  "Encoding": "UTF8"
+                },
+                "Type": "Json"
+              },
+              "Type": "Stream"
+            }
+          }
+        ],
+        "Outputs": [
+          {
+            "Name": "DeviceInfoEvents",
+            "Properties": {
+              "DataSource": {
+                "Properties": {
+                  "EventHubName": "[variables('ehOutName')]",
+                  "ServiceBusNamespace": "[variables('sbName')]",
+                  "SharedAccessPolicyKey": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryKey]",
+                  "SharedAccessPolicyName": "[variables('sbKeyName')]",
+                  "PartitionKey": "PartitionId"
+                },
+                "Type": "Microsoft.ServiceBus/EventHub"
+              },
+              "Serialization": {
+                "Properties": {
+                  "Encoding": "UTF8",
+                  "Format": "Array"
+                },
+                "Type": "Json"
+              }
+            }
+          }
+        ],
+        "Transformation": {
+          "Name": "AllToBlob",
+          "Properties": {
+            "Query": "SELECT \r\n    'TempSpike' AS alerttype, \r\n    'Temperature over 80F' AS message, \r\n    displayname,\r\n    guid,\r\n    measurename,\r\n    unitofmeasure,\r\n    location,\r\n    organization,\r\n    MIN(timecreated) AS timecreated,\r\n    MAX(value) AS tempMax,\r\n    MAX(value) AS value\r\nINTO\r\n    DeviceInfoEvents\r\nFROM \r\n    IoTHubStream TIMESTAMP BY timecreated\r\nWHERE\r\n    measurename = 'temperature' OR measurename = 'Temperature'\r\nGROUP BY \r\n    displayname, guid, measurename, unitofmeasure, location, organization,\r\n    TumblingWindow(Second, 5)\r\n HAVING\r\n   tempMax > 80",
+            "StreamingUnits": 1
+          }
+        }
+      }
+    }
+  ]
 }
