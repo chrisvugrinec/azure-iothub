@@ -259,8 +259,6 @@
                                 "type": "Microsoft.ServiceBus/Queue",
                                 "properties": {
                                     "serviceBusNamespace": "[variables('sbqName')]",
-                                    "sharedAccessPolicyName": "[variables('sbTopicSendToEventsRuleName')]",
-                                    "sharedAccessPolicyKey": "[listkeys(variables('sbTopicSendToEventsRuleResourceId'), '2015-08-01').primaryKey]",
                                     "queueName": "[variables('sbqQName')]"
                                 }
                             },
