@@ -116,7 +116,7 @@
             "resources": [
                 {
                     "apiVersion": "[variables('sbVersion')]",
-                    "name": "[parameters('serviceBusNamespaceName')]",
+                    "name": "[variables('serviceBusNamespaceName')]",
                     "type": "Microsoft.ServiceBus/Namespaces",
                     "location": "[variables('location')]",
                     "kind": "Messaging",
@@ -130,7 +130,7 @@
                             "name": "[variables('serviceBusQueueName')]",
                             "type": "Queues",
                             "dependsOn": [
-                                "[concat('Microsoft.ServiceBus/namespaces/', parameters('serviceBusNamespaceName'))]"
+                                "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusNamespaceName'))]"
                             ],
                             "properties": {
                                 "path": "[variables('serviceBusQueueName')]",
