@@ -44,7 +44,7 @@
 		"apiVersionIotHubs": "2016-02-03",
 		"apiVersionServiceBus": "2015-08-01",
 		"apiVersionStreamingJobs": "2016-03-01",
-		"iotHubName": "parameters('iothubName')",
+		"iotHubName": "[parameters('iothubName')]",
 		"iotHubKeyName": "iothubowner",
 		"iotHubVersion": "2016-02-03",
 		"iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
