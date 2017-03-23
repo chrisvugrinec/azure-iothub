@@ -65,9 +65,44 @@
         "websiteCGName": "websitecg",
         "webSku": "Standard",
         "webWorkerCount": 2,
-        "webWorkerSize": 0
+        "webWorkerSize": 0,
+        "keyGeneratorTemplateUri": "https://raw.githubusercontent.com/sjkp/Azure.ARM.ServiceBus/master/Azure.ARM.ServiceBus/Templates/keygenerator.json"
     },
     "resources": [
+        {
+            "apiVersion": "2015-01-01",
+            "name": "primaryKey",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('keyGeneratorTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "seed": {
+                        "value": "1234a5"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2015-01-01",
+            "name": "secondaryKey",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('keyGeneratorTemplateUri')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "seed": {
+                        "value": "ac34a5"
+                    }
+                }
+            }
+        },
         {
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbqName')]",
@@ -93,10 +128,12 @@
         },
         {
             "apiVersion": "[variables('sbVersion')]",
-            "name": "[concat(parameters('sbNamespace'),'/',variables('sbqName'))]",
+            "name": "[concat(variables('sbqName'),'/',variables('sbqQName'))]",
             "type": "Microsoft.ServiceBus/namespaces/authorizationRules",
             "dependsOn": [
-                "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
+                "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]",
+                "[concat('Microsoft.Resources/deployments/', 'primaryKey')]",
+                "[concat('Microsoft.Resources/deployments/', 'secondaryKey')]"
             ],
             "location": "[variables('location')]",
             "properties": {
@@ -106,7 +143,8 @@
                 "PrimaryKey": "[reference('primaryKey').outputs.key.value]",
                 "SecondaryKey": "[reference('secondaryKey').outputs.key.value]",
                 "Rights": [
-                    "Send","Receive"
+                    "Send",
+                    "Receive"
                 ],
                 "Revision": -1
             }
