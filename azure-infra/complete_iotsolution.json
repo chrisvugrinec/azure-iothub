@@ -49,9 +49,9 @@
         "iotHubVersion": "2016-02-03",
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
         "sbVersion": "2015-08-01",
-		"sbName": "[parameters(sbusName)]",
+        "sbName": "[parameters('sbusName')]",
         "sbKeyName": "RootManageSharedAccessKey"
-	},
+    },
     "resources": [
         {
             "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -150,18 +150,16 @@
                 "enabled": true
             },
             "resources": [
-              {
-                  "apiVersion": "2015-08-01",
-                  "name": "[concat(variables('sbName'),'-pqueue')]",
-                  "type": "Queues",
-                  "dependsOn": [
-                      "[concat('Microsoft.ServiceBus/namespaces/', variables('sbName'))]"
-                  ],
-                   "properties": {
-                  },
-                  "resources": [
-                  ]
-              }
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "[concat(variables('sbName'),'-pqueue')]",
+                    "type": "Queues",
+                    "dependsOn": [
+                        "[concat('Microsoft.ServiceBus/namespaces/', variables('sbName'))]"
+                    ],
+                    "properties": {},
+                    "resources": []
+                }
             ],
             "dependsOn": []
         },
@@ -256,7 +254,6 @@
                         "Properties": {
                             "DataSource": {
                                 "Properties": {
-									"ServiceBusNamespaceQueue": "[concat(variables('sbName'),'-pqueue')]",
                                     "ServiceBusNamespace": "[parameters('sbusName')]",
                                     "SharedAccessPolicyName": "[variables('sbKeyName')]",
                                     "PartitionKey": "PartitionId"
