@@ -93,7 +93,7 @@
         },
         {
             "apiVersion": "[variables('sbVersion')]",
-            "name": "[concat(parameters('sbNamespace'),'/',variables('sbqName')]",
+            "name": "[concat(parameters('sbNamespace'),'/',variables('sbqName'))]",
             "type": "Microsoft.ServiceBus/namespaces/authorizationRules",
             "dependsOn": [
                 "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
