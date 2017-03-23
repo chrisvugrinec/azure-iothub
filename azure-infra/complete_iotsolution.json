@@ -260,7 +260,7 @@
                   "ServiceBusQueueName": "[variables('sbqQName')]",
                   "ServiceBusNamespace": "[variables('sbqName')]"
                 },
-                "Type": "Microsoft.ServiceBus/Namespaces/Queues"
+                "Type": "Microsoft.ServiceBus/Namespaces"
               },
               "Serialization": {
                 "Properties": {
