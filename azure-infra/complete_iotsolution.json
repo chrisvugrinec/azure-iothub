@@ -152,7 +152,7 @@
             "resources": [
                 {
                     "apiVersion": "2015-08-01",
-                    "name": "[concat(variables('sbName'),'-pqueue')]",
+                    "name": "pqueue",
                     "type": "Queues",
                     "dependsOn": [
                         "[concat('Microsoft.ServiceBus/namespaces/', variables('sbName'))]"
@@ -181,7 +181,7 @@
         },
         {
             "type": "Microsoft.ServiceBus/namespaces/queues",
-            "name": "[concat(variables('sbName'),'-pqueue')]",
+            "name": "pqueue",
             "apiVersion": "2015-08-01",
             "location": "[variables('location')]",
             "properties": {
