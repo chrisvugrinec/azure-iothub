@@ -70,32 +70,70 @@
 			"name": "[parameters('databaseAccountsName')]"
 		},
 		"dependsOn": []
-	}, {
-		"apiVersion": "[variables('apiVersionIotHubs')]",
-		"name": "[variables('iotHubName')]",
-		"location": "[variables('location')]",
-		"type": "Microsoft.Devices/IotHubs",
-		"sku": {
-			"name": "F1",
-			"tier": "Free",
-			"capacity": 1
-		},
-		"properties": {
-			"mode": "Incremental",
-			"templateLink": {
-				"uri": "[concat(variables('artifactsLocationURL'), '/iothub.json')]",
-				"contentVersion": "1.0.0.0"
-			},
-			"parameters": {
-				"iothub_name": {
-					"value": "[parameters('iothubName')]"
-				},
-				"location": {
-					"value": "[variables('location')]"
-				}
-			}
-		}
-	},
+	}, 
+        {
+            "type": "Microsoft.Devices/IotHubs",
+            "sku": {
+                "name": "F1",
+                "tier": "Free",
+                "capacity": 1
+            },
+            "name": "[variables('iotHubName')]",
+            "apiVersion": "2016-02-03",
+            "location": "[variables('location')]",
+            "tags": {},
+            "properties": {
+                "ipFilterRules": [],
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": []
+                    },
+                    "routes": [],
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
+                "storageEndpoints": {
+                    "$default": {
+                        "sasTtlAsIso8601": "PT1H",
+                        "connectionString": "",
+                        "containerName": ""
+                    }
+                },
+                "enableFileUploadNotifications": false,
+                "cloudToDevice": {
+                    "maxDeliveryCount": 10,
+                    "defaultTtlAsIso8601": "PT1H",
+                    "feedback": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "operationsMonitoringProperties": {
+                    "events": {
+                        "None": "None",
+                        "Connections": "None",
+                        "DeviceTelemetry": "None",
+                        "C2DCommands": "None",
+                        "DeviceIdentityOperations": "None",
+                        "FileUploadOperations": "None",
+                        "Routes": "None"
+                    }
+                },
+                "features": "None"
+            },
+            "resources": [],
+            "dependsOn": []
+        },
  {
 		"apiVersion": "[variables('apiVersionServiceBus')]",
 		"name": "iot-azure-servicebus",
