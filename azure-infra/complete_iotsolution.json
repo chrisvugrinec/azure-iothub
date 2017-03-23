@@ -88,22 +88,28 @@
                     "properties": {
                         "path": "[variables('sbqQName')]"
                     }
-                },
-                {
-                        "apiVersion": "2015-08-01",
-                        "name": "[variables('sbQueuePolicyName')]",
-                        "type": "authorizationRules",
-                        "dependsOn": [
-                            "[variables('sbqName')]"
-                        ],
-                        "properties": {
-                            "rights": [
-                                "Send",
-                                "Receive"
-                            ]
-                        }
                 }
             ]
+        },
+        {
+            "apiVersion": "[variables('sbVersion')]",
+            "name": "[concat(parameters('sbNamespace'),'/',variables('sbqName')]",
+            "type": "Microsoft.ServiceBus/namespaces/authorizationRules",
+            "dependsOn": [
+                "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
+            ],
+            "location": "[variables('location')]",
+            "properties": {
+                "KeyName": "[variables('sbQueuePolicyName')]",
+                "ClaimType": "SendSharedAccessKey",
+                "ClaimValue": "None",
+                "PrimaryKey": "[reference('primaryKey').outputs.key.value]",
+                "SecondaryKey": "[reference('secondaryKey').outputs.key.value]",
+                "Rights": [
+                    "Send","Receive"
+                ],
+                "Revision": -1
+            }
         },
         {
             "apiVersion": "[variables('storageVersion')]",
