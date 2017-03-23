@@ -255,13 +255,6 @@
           {
             "Name": "iot-output",
             "Properties": {
-              "DataSource": {
-                "Properties": {
-                  "ServiceBusQueueName": "[variables('sbqQName')]",
-                  "ServiceBusNamespace": "[variables('sbqName')]"
-                },
-                "Type": "Microsoft.ServiceBus/Namespaces"
-              },
               "Serialization": {
                 "Properties": {
                   "Encoding": "UTF8",
