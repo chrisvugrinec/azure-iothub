@@ -207,7 +207,7 @@
         "outputStartTime": null,
         "Inputs": [
           {
-            "Name": "IoTHubStream",
+            "Name": "iot-input",
             "Properties": {
               "DataSource": {
                 "Properties": {
@@ -230,7 +230,7 @@
         ],
         "Outputs": [
           {
-            "Name": "DeviceInfoEvents",
+            "Name": "iot-output",
             "Properties": {
               "DataSource": {
                 "Properties": {
@@ -255,7 +255,7 @@
         "Transformation": {
           "Name": "AllToBlob",
           "Properties": {
-            "Query": "SELECT \r\n    'TempSpike' AS alerttype, \r\n    'Temperature over 80F' AS message, \r\n    displayname,\r\n    guid,\r\n    measurename,\r\n    unitofmeasure,\r\n    location,\r\n    organization,\r\n    MIN(timecreated) AS timecreated,\r\n    MAX(value) AS tempMax,\r\n    MAX(value) AS value\r\nINTO\r\n    DeviceInfoEvents\r\nFROM \r\n    IoTHubStream TIMESTAMP BY timecreated\r\nWHERE\r\n    measurename = 'temperature' OR measurename = 'Temperature'\r\nGROUP BY \r\n    displayname, guid, measurename, unitofmeasure, location, organization,\r\n    TumblingWindow(Second, 5)\r\n HAVING\r\n   tempMax > 80",
+            "query": "SELECT\r\n    *\r\nINTO\r\n    [iot-output]\r\nFROM\r\n    [iot-input]",
             "StreamingUnits": 1
           }
         }
