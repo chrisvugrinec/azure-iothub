@@ -60,7 +60,7 @@
         "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
         "sbQueueRuleName": "RootManageSharedAccessKey",
         "sbQueuePolicyName": "sbqueuePolicy",
-        "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName')]",
+        "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
         "ehOutName": "ehalerts",
         "sbKeyName": "RootManageSharedAccessKey",
         "sbSku": 1,
@@ -107,9 +107,9 @@
                     "properties": {
                         "path": "[variables('sbqQName')]"
                     },
-                    "resources":{
+                },{
                         "apiVersion": "2015-08-01",
-                        "name": "variables('sbQueuePolicyName')",
+                        "name": "[variables('sbQueuePolicyName')]",
                         "type": "authorizationRules",
                         "dependsOn": [
                             "[variables('sbqQName')]"
