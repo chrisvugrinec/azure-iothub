@@ -59,7 +59,6 @@
         "storageAccountSku": "Standard_LRS",
         "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
         "sbQueueRuleName": "RootManageSharedAccessKey",
-        "sbTopicSendToEventsRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbTopicSendToEventsRuleName'))]",
         "ehOutName": "ehalerts",
         "sbKeyName": "RootManageSharedAccessKey",
         "sbSku": 1,
