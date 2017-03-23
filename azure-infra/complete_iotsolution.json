@@ -215,7 +215,7 @@
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
         "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]",
         "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]",
-        "[concat('Microsoft.Eventhub/namespaces/', variables('sbqName'))]"
+        "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
       ],
       "tags": {
         "displayName": "Stream Analytics Job"
