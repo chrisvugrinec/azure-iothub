@@ -57,13 +57,15 @@
     "location": "[parameters('region')]",
     "storageVersion": "2015-06-15",
     "storageName": "[concat(parameters('solutionName'), 'storage')]",
-    "storageId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
     "storageAccountSku": "Standard_LRS",
     "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
     "ehOutName": "ehalerts",
     "sbKeyName": "RootManageSharedAccessKey",
     "sbSku": 1,
+    "sbVersion": "2015-08-01",
     "sbName": "[concat(parameters('solutionName'),'sb')]",
+    "sbqName": "[concat(parameters('solutionName'),'sbq')]",
+    "sbqQName": "papayaqueue",
     "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbName'), variables('sbKeyName'))]",
     "saVersion": "2015-10-01",
     "saName": "[concat(parameters('solutionName'), 'alerts')]",
@@ -83,6 +85,27 @@
     "webWorkerSize": 0
   },
   "resources": [
+      {
+        "apiVersion": "[variables('sbVersion')]",
+        "name": "[variables('sbqName')]",
+        "type": "Microsoft.ServiceBus/Namespaces",
+        "location": "[variables('location')]",
+        "sku": {
+            "name": "Standard",
+            "tier": "Standard"
+        },
+        "resources": [{
+            "apiVersion": "[variables('sbVersion')]",
+            "name": "[variables('sbqQName')]",
+            "type": "Queues",
+            "dependsOn": [
+                "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
+            ],
+            "properties": {
+                "path": "[variables('sbqQName')]"
+            }
+        }]
+    },
     {
       "apiVersion": "[variables('storageVersion')]",
       "location": "[variables('location')]",
