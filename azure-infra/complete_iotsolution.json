@@ -2,25 +2,6 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "region": {
-            "type": "string",
-            "allowedValues": [
-                "East US",
-                "West US",
-                "North Europe",
-                "West Europe",
-                "East Asia",
-                "South East Asia",
-                "Japan East",
-                "Japan West",
-                "Australia East",
-                "Australia SouthEast",
-                "North Europe"
-            ],
-            "metadata": {
-                "description": "The Region to deploy the solution to"
-            }
-        },
         "solutionName": {
             "type": "string",
             "maxLength": 16,
@@ -53,7 +34,7 @@
         }
     },
     "variables": {
-        "location": "[parameters('region')]",
+        "location": "[resourceGroup().location]",
         "storageVersion": "2015-06-15",
         "storageName": "[concat(parameters('solutionName'), 'storage')]",
         "storageAccountSku": "Standard_LRS",
@@ -106,13 +87,14 @@
                     ],
                     "properties": {
                         "path": "[variables('sbqQName')]"
-                    },
-                },{
+                    }
+                },
+                {
                         "apiVersion": "2015-08-01",
                         "name": "[variables('sbQueuePolicyName')]",
                         "type": "authorizationRules",
                         "dependsOn": [
-                            "[variables('sbqQName')]"
+                            "[variables('sbqName')]"
                         ],
                         "properties": {
                             "rights": [
@@ -120,7 +102,6 @@
                                 "Receive"
                             ]
                         }
-                    }
                 }
             ]
         },
@@ -269,6 +250,9 @@
                 "Outputs": [
                     {
                         "Name": "iot-output",
+                        "dependsOn": [
+                            "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]"
+                        ],
                         "Properties": {
                             "DataSource": {
                                 "type": "Microsoft.ServiceBus/Queue",
