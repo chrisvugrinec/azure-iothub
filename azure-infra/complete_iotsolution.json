@@ -34,7 +34,6 @@
     "variables": {},
     "resources": [
         {
-            "comments": "Generalized from resource: '/subscriptions/3a323844-2679-4178-a8b5-66fa692d5e44/resourceGroups/chrix/providers/Microsoft.Devices/IotHubs/chrixhub'.",
             "type": "Microsoft.Devices/IotHubs",
             "sku": {
                 "name": "S1",
@@ -125,7 +124,6 @@
             "dependsOn": []
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/3a323844-2679-4178-a8b5-66fa692d5e44/resourcegroups/chrix/providers/Microsoft.Eventhub/namespaces/chrixsb'.",
             "type": "Microsoft.Eventhub/namespaces",
             "sku": {
                 "name": "Standard",
@@ -150,7 +148,6 @@
             "dependsOn": []
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/3a323844-2679-4178-a8b5-66fa692d5e44/resourcegroups/chrix/providers/Microsoft.Eventhub/namespaces/chrixsb/AuthorizationRules/RootManageSharedAccessKey'.",
             "type": "Microsoft.Eventhub/namespaces/AuthorizationRules",
             "name": "[parameters('AuthorizationRules_RootManageSharedAccessKey_name')]",
             "apiVersion": "2015-08-01",
@@ -166,7 +163,6 @@
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/3a323844-2679-4178-a8b5-66fa692d5e44/resourcegroups/chrix/providers/Microsoft.Eventhub/namespaces/chrixsb/eventhubs/ehalerts'.",
             "type": "Microsoft.Eventhub/namespaces/eventhubs",
             "name": "[parameters('eventhubs_ehalerts_name')]",
             "apiVersion": "2015-08-01",
@@ -189,7 +185,6 @@
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/3a323844-2679-4178-a8b5-66fa692d5e44/resourcegroups/chrix/providers/Microsoft.Eventhub/namespaces/chrixsb/eventhubs/ehalerts/consumergroups/$Default'.",
             "type": "Microsoft.Eventhub/namespaces/eventhubs/consumergroups",
             "name": "[parameters('consumergroups_$Default_name')]",
             "apiVersion": "2015-08-01",
@@ -197,36 +192,6 @@
             "properties": {
                 "createdAt": "2017-03-23T08:20:37.4410123",
                 "updatedAt": "2017-03-23T08:20:37.4410123"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Eventhub/namespaces', parameters('namespaces_chrixsb_name'))]",
-                "[resourceId('Microsoft.Eventhub/namespaces/eventhubs', parameters('eventhubs_ehalerts_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/3a323844-2679-4178-a8b5-66fa692d5e44/resourcegroups/chrix/providers/Microsoft.Eventhub/namespaces/chrixsb/eventhubs/ehalerts/consumergroups/debug'.",
-            "type": "Microsoft.Eventhub/namespaces/eventhubs/consumergroups",
-            "name": "[parameters('consumergroups_debug_name')]",
-            "apiVersion": "2015-08-01",
-            "location": "North Europe",
-            "properties": {
-                "createdAt": "2017-03-23T08:20:48.595373",
-                "updatedAt": "2017-03-23T08:20:48.595373"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Eventhub/namespaces', parameters('namespaces_chrixsb_name'))]",
-                "[resourceId('Microsoft.Eventhub/namespaces/eventhubs', parameters('eventhubs_ehalerts_name'))]"
-            ]
-        },
-        {
-            "comments": "Generalized from resource: '/subscriptions/3a323844-2679-4178-a8b5-66fa692d5e44/resourcegroups/chrix/providers/Microsoft.Eventhub/namespaces/chrixsb/eventhubs/ehalerts/consumergroups/websitecg'.",
-            "type": "Microsoft.Eventhub/namespaces/eventhubs/consumergroups",
-            "name": "[parameters('consumergroups_websitecg_name')]",
-            "apiVersion": "2015-08-01",
-            "location": "North Europe",
-            "properties": {
-                "createdAt": "2017-03-23T08:20:49.0018668",
-                "updatedAt": "2017-03-23T08:20:49.0018668"
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Eventhub/namespaces', parameters('namespaces_chrixsb_name'))]",
