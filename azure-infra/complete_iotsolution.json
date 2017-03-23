@@ -50,7 +50,8 @@
 		"iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
                 "sbVersion": "2015-08-01",
                 "sbKeyName": "RootManageSharedAccessKey",
-                "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', parameters('sbusName'), variables('sbKeyName'))]"
+                "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', parameters('sbusName'), variables('sbKeyName'))]",
+                "ehOutName": "ehalerts"
 	},
 	"resources": [{
 		"type": "Microsoft.DocumentDB/databaseAccounts",
@@ -177,29 +178,29 @@
 					"Type": "Stream"
 				}
 			}],
-        "Outputs": [
-          {
-            "Name": "iotdemo-output",
-            "Properties": {
-              "DataSource": {
-                "Properties": {
-                  "ServiceBusNamespace": "[parameters('sbusName')]",
-                  "SharedAccessPolicyKey": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryKey]",
-                  "SharedAccessPolicyName": "[variables('sbKeyName')]",
-                  "PartitionKey": "PartitionId"
-                },
-                "Type": "Microsoft.ServiceBus/EventHub"
-              },
-              "Serialization": {
-                "Properties": {
-                  "Encoding": "UTF8",
-                  "Format": "Array"
-                },
-                "Type": "Json"
-              }
-            }
-          }
-        ],
+                        "Outputs": [{
+                             "Name": "iotdemo-output",
+                             "Properties": {
+                                "DataSource": {
+                                   "Properties": {
+                                      "EventHubName": "[variables('ehOutName')]",
+                                      "ServiceBusNamespace": "[parameters('sbusName')]",
+                                      "SharedAccessPolicyKey": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryKey]",
+                                      "SharedAccessPolicyName": "[variables('sbKeyName')]",
+                                      "PartitionKey": "PartitionId"
+                                   },
+                                   "Type": "Microsoft.ServiceBus/EventHub"
+                               },
+                               "Serialization": {
+                                   "Properties": {
+                                      "Encoding": "UTF8",
+                                      "Format": "Array"
+                                   },
+                                   "Type": "Json"
+                               }
+                            }
+                          }
+                        ],
 			"transformation": {
 				"name": "Transformation",
 				"properties": {
