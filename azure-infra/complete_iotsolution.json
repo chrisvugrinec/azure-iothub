@@ -17,18 +17,6 @@
         "eventhubs_ehalerts_name": {
             "defaultValue": "chrixsb/ehalerts",
             "type": "String"
-        },
-        "consumergroups_$Default_name": {
-            "defaultValue": "chrixsb/ehalerts/$Default",
-            "type": "String"
-        },
-        "consumergroups_debug_name": {
-            "defaultValue": "chrixsb/ehalerts/debug",
-            "type": "String"
-        },
-        "consumergroups_websitecg_name": {
-            "defaultValue": "chrixsb/ehalerts/websitecg",
-            "type": "String"
         }
     },
     "variables": {},
@@ -186,7 +174,7 @@
         },
         {
             "type": "Microsoft.Eventhub/namespaces/eventhubs/consumergroups",
-            "name": "[parameters('consumergroups_$Default_name')]",
+            "name": "[parameters('eventhubs_ehalerts_name')]",
             "apiVersion": "2015-08-01",
             "location": "North Europe",
             "properties": {
