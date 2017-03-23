@@ -58,7 +58,7 @@
         "storageName": "[concat(parameters('solutionName'), 'storage')]",
         "storageAccountSku": "Standard_LRS",
         "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
-        "sbTopicSendToEventsRuleName": "sbTopicSendToEventsRule",
+        "sbQueueRuleName": "RootManageSharedAccessKey",
         "sbTopicSendToEventsRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbTopicSendToEventsRuleName'))]",
         "ehOutName": "ehalerts",
         "sbKeyName": "RootManageSharedAccessKey",
@@ -259,6 +259,7 @@
                                 "type": "Microsoft.ServiceBus/Queue",
                                 "properties": {
                                     "serviceBusNamespace": "[variables('sbqName')]",
+                                    "sharedAccessPolicyName": "[variables('sbQueueRuleName')]",
                                     "queueName": "[variables('sbqQName')]"
                                 }
                             },
