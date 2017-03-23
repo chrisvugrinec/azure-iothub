@@ -53,7 +53,10 @@
         }
     },
     "variables": {
-        "location": "[parameters('region')]",
+        "location": "[resourceGroup().location]",
+        "serviceBusNamespaceName": "[concat(parameters('solutionName'), 'sb')]", 
+        "serviceBusQueueName": "[concat(parameters('solutionName'), 'sbqueue')]",
+        "sbVersion" : "2015-08-01",
         "storageVersion": "2015-06-15",
         "storageName": "[concat(parameters('solutionName'), 'storage')]",
         "storageId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
@@ -124,13 +127,13 @@
                     "resources": [
                         {
                             "apiVersion": "[variables('sbVersion')]",
-                            "name": "[parameters('serviceBusQueueName')]",
+                            "name": "[variables('serviceBusQueueName')]",
                             "type": "Queues",
                             "dependsOn": [
                                 "[concat('Microsoft.ServiceBus/namespaces/', parameters('serviceBusNamespaceName'))]"
                             ],
                             "properties": {
-                                "path": "[parameters('serviceBusQueueName')]",
+                                "path": "[variables('serviceBusQueueName')]",
                             }
                         }
                     ]
