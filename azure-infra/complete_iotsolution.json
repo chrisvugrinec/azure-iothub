@@ -180,9 +180,7 @@
 				"[resourceId('Microsoft.Eventhub/namespaces', parameters('namespaces_chrixsb_name'))]",
 				"[resourceId('Microsoft.Eventhub/namespaces/eventhubs', parameters('eventhubs_ehalerts_name'))]"
 			]
-		},
-
-		{
+		},{
 			"apiVersion": "2015-08-01",
 			"name": "[concat(parameters('namespaces_chrixsb_name'),'sbq')]",
 			"type": "Microsoft.ServiceBus/Namespaces",
