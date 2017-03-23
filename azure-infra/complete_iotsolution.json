@@ -62,11 +62,11 @@
     "ehOutName": "ehalerts",
     "sbKeyName": "RootManageSharedAccessKey",
     "sbSku": 1,
-    "sbVersion": "2015-08-01",
     "sbName": "[concat(parameters('solutionName'),'sb')]",
     "sbqName": "[concat(parameters('solutionName'),'sbq')]",
     "sbqQName": "papayaqueue",
     "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbName'), variables('sbKeyName'))]",
+    "sbqResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbqName'), variables('sbKeyName'))]",
     "saVersion": "2015-10-01",
     "saName": "[concat(parameters('solutionName'), 'alerts')]",
     "webVersion": "2015-04-01",
@@ -258,8 +258,8 @@
               "DataSource": {
                 "Properties": {
                   "EventHubName": "[variables('ehOutName')]",
-                  "ServiceBusNamespace": "[variables('sbName')]",
-                  "SharedAccessPolicyKey": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryKey]",
+                  "ServiceBusNamespace": "[variables('sbqName')]",
+                  "SharedAccessPolicyKey": "[listkeys(variables('sbqResourceId'), variables('sbVersion')).primaryKey]",
                   "SharedAccessPolicyName": "[variables('sbKeyName')]",
                   "PartitionKey": "PartitionId"
                 },
