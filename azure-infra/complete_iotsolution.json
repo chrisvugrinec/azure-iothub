@@ -257,13 +257,10 @@
             "Properties": {
               "DataSource": {
                 "Properties": {
-                  "EventHubName": "[variables('ehOutName')]",
-                  "ServiceBusNamespace": "[variables('sbqName')]",
-                  "SharedAccessPolicyKey": "[listkeys(variables('sbqResourceId'), variables('sbVersion')).primaryKey]",
-                  "SharedAccessPolicyName": "[variables('sbKeyName')]",
-                  "PartitionKey": "PartitionId"
+                  "ServiceBusQueueName": "[variables('sbqQName')]",
+                  "ServiceBusNamespace": "[variables('sbqName')]"
                 },
-                "Type": "Microsoft.ServiceBus/EventHub"
+                "Type": "Microsoft.ServiceBus/namespace/Queues"
               },
               "Serialization": {
                 "Properties": {
