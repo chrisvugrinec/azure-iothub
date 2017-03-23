@@ -149,18 +149,7 @@
                 "serviceBusEndpoint": "[concat('https://', variables('sbName'),'.servicebus.windows.net:443/')]",
                 "enabled": true
             },
-            "resources": [
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "pqueue",
-                    "type": "Queues",
-                    "dependsOn": [
-                        "[concat('Microsoft.ServiceBus/namespaces/', variables('sbName'))]"
-                    ],
-                    "properties": {},
-                    "resources": []
-                }
-            ],
+            "resources": [],
             "dependsOn": []
         },
         {
