@@ -116,7 +116,7 @@
                         ],
                         "properties": {
                             "Rights": [
-                                "Listen"
+                                "Listen", "Send"
                             ]
                         }
                     }]
