@@ -276,7 +276,7 @@
                                 "type": "Microsoft.ServiceBus/Queue",
                                 "properties": {
                                     "serviceBusNamespace": "[variables('sbqName')]",
-                                    "sharedAccessPolicyName": "[variables('sbQueueRuleName')]",
+                                    "sharedAccessPolicyName": "[variables('sbQueuePolicyName')]",
                                     "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), '2015-08-01').primaryKey]",
                                     "queueName": "[variables('sbqQName')]"
                                 }
