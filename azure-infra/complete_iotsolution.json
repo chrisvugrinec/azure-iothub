@@ -87,6 +87,19 @@
                     ],
                     "properties": {
                         "path": "[variables('sbqQName')]"
+                    },
+                    "resources": {
+                        "apiVersion": "[variables('sbVersion')]",
+                        "name": "[variables('sbQueuePolicyName')]",
+                        "type": "authorizationRules",
+                        "dependsOn": [
+                            "[parameters('sbqQName')]"
+                        ],
+                        "properties": {
+                            "Rights": [
+                                "Listen"
+                            ]
+                        }
                     }
                 }
             ]
@@ -163,18 +176,6 @@
                     },
                     "resources": [
                         {
-                            "apiVersion": "[variables('sbVersion')]",
-                            "name": "[parameters('sbQueuePolicyName')]",
-                            "type": "authorizationRules",
-                            "dependsOn": [
-                                "[parameters('sbqQName')]"
-                            ],
-                            "properties": {
-                                "Rights": [
-                                    "Listen"
-                                ]
-                            }
-                        },{
                             "apiVersion": "[variables('sbVersion')]",
                             "name": "[variables('websiteCGName')]",
                             "type": "ConsumerGroups",
