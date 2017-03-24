@@ -294,11 +294,11 @@
         },
         "sbuskey": {
             "type": "string",
-            "value": "[listkeys(variables('sbqName'), variables('sbVersion')).primaryMasterKey]"
+            "value": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryConnectionString]"
         },
         "sbusqueuename": {
             "type": "string",
-            "value": "variables('sbqQName')"
+            "value": "[variables('sbqQName')]"
         }
     }
 }
