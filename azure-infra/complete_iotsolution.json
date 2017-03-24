@@ -26,15 +26,11 @@
         "location": "[resourceGroup().location]",
         "databaseAccountsName": "[concat(parameters('solutionName'),'db')]",
         "docDbApiVersion": "2015-04-08",
-        "storageVersion": "2015-06-15",
-        "storageName": "[concat(parameters('solutionName'), 'storage')]",
-        "storageAccountSku": "Standard_LRS",
         "sbVersion": "2015-08-01",
         "sbQueuePolicyName": "sbqueuePolicy",
         "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
         "sbResourceId": "[resourceId('Microsoft.ServiceBus/namespaces', variables('sbqName'))]",
         "ehOutName": "ehalerts",
-        "sbKeyName": "RootManageSharedAccessKey",
         "sbSku": 1,
         "sbName": "[concat(parameters('solutionName'),'sb')]",
         "sbqName": "[concat(parameters('solutionName'),'sbq')]",
@@ -113,18 +109,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "apiVersion": "[variables('storageVersion')]",
-            "location": "[variables('location')]",
-            "name": "[variables('storageName')]",
-            "properties": {
-                "accountType": "[variables('storageAccountSku')]"
-            },
-            "type": "Microsoft.Storage/storageAccounts",
-            "tags": {
-                "displayName": "storage"
-            }
         },
         {
             "apiVersion": "[variables('iotHubVersion')]",
@@ -217,7 +201,6 @@
             "name": "[variables('saName')]",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
                 "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]",
                 "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]",
                 "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
@@ -268,7 +251,7 @@
                                 "properties": {
                                     "serviceBusNamespace": "[variables('sbqName')]",
                                     "sharedAccessPolicyName": "[variables('sbQueuePolicyName')]",
-                                    "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), variables('sbVersion').primaryKey]",
+                                    "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), variables('sbVersion')).primaryKey]",
                                     "queueName": "[variables('sbqQName')]"
                                 }
                             },
@@ -303,19 +286,19 @@
         },
         "documentDBMasterKey": {
             "type": "string",
-            "value": "[listkeys(variables('databaseAccountsName'), variables('docDbApiVersion').primaryMasterKey]"
+            "value": "[listkeys(variables('databaseAccountsName'), variables('docDbApiVersion')).primaryMasterKey]"
         },
         "sbusname": {
             "type": "string",
-            "value": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryMasterKey]"
+            "value": "listkeys(variables('sbResourceId'), variables('sbVersion')).primaryMasterKey"
         },
         "sbuskey": {
             "type": "object",
-            "value": "[reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))]"
+            "value": "reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))"
         },
         "sbusqueuename": {
             "type": "object",
-            "value": "[reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))]"
+            "value": "reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))"
         }
     }
 }
