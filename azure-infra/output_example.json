@@ -57,6 +57,6 @@
             "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
         }
 
-
+      }
     }
 }

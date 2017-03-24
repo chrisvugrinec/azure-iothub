@@ -307,29 +307,27 @@
     "outputs": {
         "registrationConnectionString": {
             "type": "string",
-            "value": "[listkeys(variables('authRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
         },
         "documentDBHost": {
             "type": "string",
-            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
         },
         "documentDBMasterKey": {
             "type": "string",
-            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
         },
         "sbusname": {
             "type": "string",
-            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
         },
         "sbuskey": {
             "type": "string",
-            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
         },
         "sbusqueuename": {
             "type": "string",
-            "value": "payaqueue"
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
         }
-
-
     }
 }
