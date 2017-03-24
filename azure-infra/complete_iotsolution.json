@@ -25,21 +25,20 @@
     "variables": {
         "location": "[resourceGroup().location]",
         "databaseAccountsName": "[concat(parameters('solutionName'),'db')]",
+        "docDbApiVersion": "2015-04-08",
         "storageVersion": "2015-06-15",
         "storageName": "[concat(parameters('solutionName'), 'storage')]",
         "storageAccountSku": "Standard_LRS",
-        "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
-        "sbQueueRuleName": "RootManageSharedAccessKey",
+        "sbVersion": "2015-08-01",
         "sbQueuePolicyName": "sbqueuePolicy",
         "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
+        "sbResourceId": "[resourceId('Microsoft.ServiceBus/namespaces', variables('sbqName'))]",
         "ehOutName": "ehalerts",
         "sbKeyName": "RootManageSharedAccessKey",
         "sbSku": 1,
         "sbName": "[concat(parameters('solutionName'),'sb')]",
         "sbqName": "[concat(parameters('solutionName'),'sbq')]",
         "sbqQName": "papayaqueue",
-        "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbName'), variables('sbKeyName'))]",
-        "sbqResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbqName'), variables('sbKeyName'))]",
         "saVersion": "2015-10-01",
         "saName": "[concat(parameters('solutionName'), 'alerts')]",
         "webVersion": "2015-04-01",
@@ -62,7 +61,7 @@
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "kind": "GlobalDocumentDB",
             "name": "[variables('databaseAccountsName')]",
-            "apiVersion": "2015-04-08",
+            "apiVersion": "[variables('docDbApiVersion')]",
             "location": "[variables('location')]",
             "tags": {},
             "properties": {
@@ -79,7 +78,7 @@
         {
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbqName')]",
-            "type": "Microsoft.ServiceBus/Namespaces",
+            "type": "Microsoft.ServiceBus/namespaces",
             "location": "[variables('location')]",
             "sku": {
                 "name": "Standard",
@@ -269,7 +268,7 @@
                                 "properties": {
                                     "serviceBusNamespace": "[variables('sbqName')]",
                                     "sharedAccessPolicyName": "[variables('sbQueuePolicyName')]",
-                                    "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), '2015-08-01').primaryKey]",
+                                    "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), variables('sbVersion').primaryKey]",
                                     "queueName": "[variables('sbqQName')]"
                                 }
                             },
@@ -295,8 +294,8 @@
     ],
     "outputs": {
         "registrationConnectionString": {
-            "value": "[listKeys(resourceId('Microsoft.Devices/iotHubs', parameters('iotHubResourceId')), variables('iotHubVersion'))]",
-            "type": "object"
+            "type": "string",
+            "value": "[concat('HostName=', reference(variables('iotHubResourceId')).hostName, ';SharedAccessKeyName=', variables('iotHubKeyName'), ';SharedAccessKey=', listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey)]" 
         },
         "documentDBHost": {
             "type": "string",
@@ -304,19 +303,19 @@
         },
         "documentDBMasterKey": {
             "type": "string",
-            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+            "value": "[listkeys(variables('databaseAccountsName'), variables('docDbApiVersion').primaryMasterKey]"
         },
         "sbusname": {
             "type": "string",
-            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+            "value": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryMasterKey]"
         },
         "sbuskey": {
-            "type": "string",
-            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+            "type": "object",
+            "value": "[reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))]"
         },
         "sbusqueuename": {
-            "type": "string",
-            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+            "type": "object",
+            "value": "[reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))]"
         }
     }
 }
