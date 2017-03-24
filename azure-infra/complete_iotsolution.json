@@ -296,7 +296,7 @@
     "outputs": {
         "registrationConnectionString": {
             "type": "string",
-            "value": "listkeys(variables('iotHubResourceId'), variables('iotHubVersion')).primaryConnectionString]"
+            "value": "[listkeys(variables('iotHubResourceId'), variables('iotHubVersion')).primaryConnectionString]"
         },
         "documentDBHost": {
             "type": "string",
