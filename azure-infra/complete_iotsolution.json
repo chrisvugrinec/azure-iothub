@@ -6,7 +6,7 @@
             "type": "string",
             "maxLength": 16,
             "metadata": {
-                "description": "The name of your ConnectTheDots solution (will be used to prefix the services names)"
+                "description": "IOT Hub demo"
             }
         },
         "iotHubSku": {
@@ -29,7 +29,7 @@
         "sbVersion": "2015-08-01",
         "sbQueuePolicyName": "sbqueuePolicy",
         "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
-        "sbResourceId": "[resourceId('Microsoft.ServiceBus/namespaces', variables('sbqName'))]",
+        "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), 'RootManageSharedAccessKey')]",
         "ehOutName": "ehalerts",
         "sbSku": 1,
         "sbName": "[concat(parameters('solutionName'),'sb')]",
@@ -278,7 +278,7 @@
     "outputs": {
         "registrationConnectionString": {
             "type": "string",
-            "value": "[concat('HostName=', reference(variables('iotHubResourceId')).hostName, ';SharedAccessKeyName=', variables('iotHubKeyName'), ';SharedAccessKey=', listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey)]" 
+            "value": "[concat('HostName=', reference(variables('iotHubResourceId')).hostName, ';SharedAccessKeyName=', variables('iotHubKeyName'), ';SharedAccessKey=', listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey)]"
         },
         "documentDBHost": {
             "type": "string",
@@ -294,7 +294,7 @@
         },
         "sbuskey": {
             "type": "string",
-            "value": "[listkeys(variables('sbResourceId'), variables('sbVersion')).primaryConnectionString]"
+            "value": "[listkeys(variables('sbRuleResourceId'), variables('sbVersion')).primaryKey]"
         },
         "sbusqueuename": {
             "type": "string",
