@@ -29,7 +29,8 @@ public class AzureIotHubClient {
 
       AzureIotHubClient t = new AzureIotHubClient();
       try{
-        t.sendMessages(System.getenv("IOTHUB"),System.getenv("DEVICE") );
+        //t.sendMessages(System.getenv("IOTHUB"),System.getenv("DEVICE") );
+        t.sendMessages(args[0],args[1] );
       }catch(Exception ex){
         ex.printStackTrace();
       }
