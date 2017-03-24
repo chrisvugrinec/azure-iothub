@@ -88,7 +88,7 @@
                     "properties": {
                         "path": "[variables('sbqQName')]"
                     },
-                    "resources": {
+                    "resources": [{
                         "apiVersion": "[variables('sbVersion')]",
                         "name": "[variables('sbQueuePolicyName')]",
                         "type": "authorizationRules",
@@ -100,7 +100,7 @@
                                 "Listen"
                             ]
                         }
-                    }
+                    }]
                 }
             ]
         },
