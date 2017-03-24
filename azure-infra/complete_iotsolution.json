@@ -83,7 +83,7 @@
                     "maxIntervalInSeconds": 5,
                     "maxStalenessPrefix": 100
                 },
-                "name": "[parameters('databaseAccountsName')]"
+                "name": "[variables('databaseAccountsName')]"
             },
             "dependsOn": []
         },
