@@ -59,9 +59,9 @@
         "iotHubVersion": "2016-02-03",
         "iotHubTier": "Standard",
         "iotHubName": "[concat(parameters('solutionName'), 'hub')]",
-        "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
         "iotHubKeyName": "iothubowner",
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
+        "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
         "saCGName": "streamanalyticscg",
         "websiteCGName": "websitecg",
         "webSku": "Standard",
@@ -307,7 +307,7 @@
     "outputs": {
         "registrationConnectionString": {
             "type": "string",
-            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+            "value": "listkeys(variables('iotHubResourceId'), variables('iotHubVersion')).primaryConnectionString]"
         },
         "documentDBHost": {
             "type": "string",
