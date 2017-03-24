@@ -1,0 +1,44 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "solutionName": {
+            "type": "string",
+            "maxLength": 16,
+            "metadata": {
+                "description": "Name of your solution"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+    ],
+    "outputs": {
+        "registrationConnectionString": {
+            "type": "string",
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+        },
+        "documentDBHost": {
+            "type": "string",
+             "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+        },
+        "documentDBMasterKey": {
+            "type": "string",
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+        },
+        "sbusname": {
+            "type": "string",
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+        },
+        "sbuskey": {
+            "type": "string",
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+        },
+        "sbusqueuename": {
+            "type": "string",
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+        }
+
+
+    }
+}

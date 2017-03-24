@@ -35,7 +35,7 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
-        "databaseAccountsName":"[concat(parameters('solutionName'),'db')]",
+        "databaseAccountsName": "[concat(parameters('solutionName'),'db')]",
         "storageVersion": "2015-06-15",
         "storageName": "[concat(parameters('solutionName'), 'storage')]",
         "storageAccountSku": "Standard_LRS",
@@ -107,19 +107,22 @@
                     "properties": {
                         "path": "[variables('sbqQName')]"
                     },
-                    "resources": [{
-                        "apiVersion": "[variables('sbVersion')]",
-                        "name": "[variables('sbQueuePolicyName')]",
-                        "type": "authorizationRules",
-                        "dependsOn": [
-                            "[variables('sbqQName')]"
-                        ],
-                        "properties": {
-                            "Rights": [
-                                "Listen", "Send"
-                            ]
+                    "resources": [
+                        {
+                            "apiVersion": "[variables('sbVersion')]",
+                            "name": "[variables('sbQueuePolicyName')]",
+                            "type": "authorizationRules",
+                            "dependsOn": [
+                                "[variables('sbqQName')]"
+                            ],
+                            "properties": {
+                                "Rights": [
+                                    "Listen",
+                                    "Send"
+                                ]
+                            }
                         }
-                    }]
+                    ]
                 }
             ]
         },
@@ -300,5 +303,33 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "registrationConnectionString": {
+            "type": "string",
+            "value": "[listkeys(variables('authRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "documentDBHost": {
+            "type": "string",
+            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "documentDBMasterKey": {
+            "type": "string",
+            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "sbusname": {
+            "type": "string",
+            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "sbuskey": {
+            "type": "string",
+            "value": "[listkeys(variables('sendAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
+        },
+        "sbusqueuename": {
+            "type": "string",
+            "value": "payaqueue"
+        }
+
+
+    }
 }
