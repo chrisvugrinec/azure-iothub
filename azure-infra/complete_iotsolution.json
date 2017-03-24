@@ -20,17 +20,6 @@
             "metadata": {
                 "description": "The Iothub Sku"
             }
-        },
-        "adminName": {
-            "type": "string"
-        },
-        "repoUrl": {
-            "type": "string",
-            "defaultValue": "https://github.com/Azure/connectthedots"
-        },
-        "branch": {
-            "type": "string",
-            "defaultValue": "master"
         }
     },
     "variables": {
