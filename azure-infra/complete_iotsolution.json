@@ -36,7 +36,7 @@
         "sbqName": "[concat(parameters('solutionName'),'sbq')]",
         "sbqQName": "papayaqueue",
         "saVersion": "2015-10-01",
-        "saName": "[concat(parameters('solutionName'), 'alerts')]",
+        "saName": "[concat(parameters('solutionName'), 'stream')]",
         "webVersion": "2015-04-01",
         "webPlanName": "[concat(parameters('solutionName'), 'plan')]",
         "webSiteName": "[parameters('solutionName')]",
@@ -290,15 +290,15 @@
         },
         "sbusname": {
             "type": "string",
-            "value": "listkeys(variables('sbResourceId'), variables('sbVersion')).primaryMasterKey"
+            "value": "[variables('sbqName')]"
         },
         "sbuskey": {
-            "type": "object",
-            "value": "reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))"
+            "type": "string",
+            "value": "[listkeys(variables('sbqName'), variables('sbVersion')).primaryMasterKey]"
         },
         "sbusqueuename": {
-            "type": "object",
-            "value": "reference(concat('Microsoft.ServiceBus/namespaces/', variables('sbqName')), variables('sbVersion'))"
+            "type": "string",
+            "value": "variables('sbqQName')"
         }
     }
 }
