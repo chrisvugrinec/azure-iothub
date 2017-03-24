@@ -35,6 +35,7 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
+        "databaseAccountsName":"[concat(parameters('solutionName'),'db')]",
         "storageVersion": "2015-06-15",
         "storageName": "[concat(parameters('solutionName'), 'storage')]",
         "storageAccountSku": "Standard_LRS",
@@ -68,6 +69,24 @@
         "webWorkerSize": 0
     },
     "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "kind": "GlobalDocumentDB",
+            "name": "[variables('databaseAccountsName')]",
+            "apiVersion": "2015-04-08",
+            "location": "[variables('location')]",
+            "tags": {},
+            "properties": {
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "name": "[parameters('databaseAccountsName')]"
+            },
+            "dependsOn": []
+        },
         {
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbqName')]",
