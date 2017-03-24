@@ -93,7 +93,7 @@
                         "name": "[variables('sbQueuePolicyName')]",
                         "type": "authorizationRules",
                         "dependsOn": [
-                            "[parameters('sbqQName')]"
+                            "[variables('sbqQName')]"
                         ],
                         "properties": {
                             "Rights": [
