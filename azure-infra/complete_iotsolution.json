@@ -295,7 +295,7 @@
     ],
     "outputs": {
         "registrationConnectionString": {
-            "value": "[reference(resourceId('Microsoft.Devices/IoTHubs',parameters('iotHubResourceId')))]",
+            "value": "[reference(resourceId('Microsoft.Devices/IoTHubs',variables('iotHubResourceId')))]",
             "type": "object"
         },
         "documentDBHost": {
