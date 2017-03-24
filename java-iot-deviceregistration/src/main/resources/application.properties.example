@@ -1,6 +1,6 @@
-registrationConnectionString=HostName=XXXXYOURCONNECTIONSTRING
-documentDBHost=https://XXXXYOURDBHOSTo-db.documents.azure.com:443/
-documentDBMasterKey=jAYXXXXXYOURDOCDBMASTERKEY
-sbusname=YOURSBUSNAME
-sbuskey=YOURSBUSKEY
-sbusqueuename=YOURQUEUENAME
+registrationConnectionString=HostName=iotdemosolutionhub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=fuKJdwlqDDtJ293fYEq2cH5q6lflkssaqq/X9wsyykA=
+documentDBHost=https://iotdemosolutiondb.documents.azure.com:443/
+documentDBMasterKey=c5tQc1i2svMRNbdj3v45EDJGmxqDOZHPMCEuPy8OMUtmfxc9jEbxijnRjZpIL61m3JRnOxMzBrJ7HbNzI4Y1Hg==
+sbusname=iotdemosolutionsbq
+sbuskey=JaVVpuQt+fcKLeB0ulzSM+PcLaCR5UZTrlnabXMBdSI=
+sbusqueuename=iotdemoqueue
