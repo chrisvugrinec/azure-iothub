@@ -6,7 +6,7 @@
             "type": "string",
             "maxLength": 16,
             "metadata": {
-                "description": "The name of your ConnectTheDots solution (will be used to prefix the services names)"
+                "description": "IOT Hub demo"
             }
         },
         "iotHubSku": {
@@ -20,48 +20,32 @@
             "metadata": {
                 "description": "The Iothub Sku"
             }
-        },
-        "adminName": {
-            "type": "string"
-        },
-        "repoUrl": {
-            "type": "string",
-            "defaultValue": "https://github.com/Azure/connectthedots"
-        },
-        "branch": {
-            "type": "string",
-            "defaultValue": "master"
         }
     },
     "variables": {
         "location": "[resourceGroup().location]",
-        "databaseAccountsName":"[concat(parameters('solutionName'),'db')]",
-        "storageVersion": "2015-06-15",
-        "storageName": "[concat(parameters('solutionName'), 'storage')]",
-        "storageAccountSku": "Standard_LRS",
-        "sbVersion": "[providers('Microsoft.Eventhub', 'namespaces').apiVersions[0]]",
-        "sbQueueRuleName": "RootManageSharedAccessKey",
+        "databaseAccountsName": "[concat(parameters('solutionName'),'db')]",
+        "docDbApiVersion": "2015-04-08",
+        "sbVersion": "2015-08-01",
         "sbQueuePolicyName": "sbqueuePolicy",
         "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
+        "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('sbqName'), 'RootManageSharedAccessKey')]",
         "ehOutName": "ehalerts",
-        "sbKeyName": "RootManageSharedAccessKey",
         "sbSku": 1,
         "sbName": "[concat(parameters('solutionName'),'sb')]",
         "sbqName": "[concat(parameters('solutionName'),'sbq')]",
         "sbqQName": "papayaqueue",
-        "sbResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbName'), variables('sbKeyName'))]",
-        "sbqResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('sbqName'), variables('sbKeyName'))]",
         "saVersion": "2015-10-01",
-        "saName": "[concat(parameters('solutionName'), 'alerts')]",
+        "saName": "[concat(parameters('solutionName'), 'stream')]",
         "webVersion": "2015-04-01",
         "webPlanName": "[concat(parameters('solutionName'), 'plan')]",
         "webSiteName": "[parameters('solutionName')]",
         "iotHubVersion": "2016-02-03",
         "iotHubTier": "Standard",
         "iotHubName": "[concat(parameters('solutionName'), 'hub')]",
-        "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
         "iotHubKeyName": "iothubowner",
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
+        "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
         "saCGName": "streamanalyticscg",
         "websiteCGName": "websitecg",
         "webSku": "Standard",
@@ -73,7 +57,7 @@
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "kind": "GlobalDocumentDB",
             "name": "[variables('databaseAccountsName')]",
-            "apiVersion": "2015-04-08",
+            "apiVersion": "[variables('docDbApiVersion')]",
             "location": "[variables('location')]",
             "tags": {},
             "properties": {
@@ -90,7 +74,7 @@
         {
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbqName')]",
-            "type": "Microsoft.ServiceBus/Namespaces",
+            "type": "Microsoft.ServiceBus/namespaces",
             "location": "[variables('location')]",
             "sku": {
                 "name": "Standard",
@@ -107,33 +91,24 @@
                     "properties": {
                         "path": "[variables('sbqQName')]"
                     },
-                    "resources": [{
-                        "apiVersion": "[variables('sbVersion')]",
-                        "name": "[variables('sbQueuePolicyName')]",
-                        "type": "authorizationRules",
-                        "dependsOn": [
-                            "[variables('sbqQName')]"
-                        ],
-                        "properties": {
-                            "Rights": [
-                                "Listen", "Send"
-                            ]
+                    "resources": [
+                        {
+                            "apiVersion": "[variables('sbVersion')]",
+                            "name": "[variables('sbQueuePolicyName')]",
+                            "type": "authorizationRules",
+                            "dependsOn": [
+                                "[variables('sbqQName')]"
+                            ],
+                            "properties": {
+                                "Rights": [
+                                    "Listen",
+                                    "Send"
+                                ]
+                            }
                         }
-                    }]
+                    ]
                 }
             ]
-        },
-        {
-            "apiVersion": "[variables('storageVersion')]",
-            "location": "[variables('location')]",
-            "name": "[variables('storageName')]",
-            "properties": {
-                "accountType": "[variables('storageAccountSku')]"
-            },
-            "type": "Microsoft.Storage/storageAccounts",
-            "tags": {
-                "displayName": "storage"
-            }
         },
         {
             "apiVersion": "[variables('iotHubVersion')]",
@@ -226,7 +201,6 @@
             "name": "[variables('saName')]",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
                 "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]",
                 "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]",
                 "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
@@ -277,7 +251,7 @@
                                 "properties": {
                                     "serviceBusNamespace": "[variables('sbqName')]",
                                     "sharedAccessPolicyName": "[variables('sbQueuePolicyName')]",
-                                    "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), '2015-08-01').primaryKey]",
+                                    "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), variables('sbVersion')).primaryKey]",
                                     "queueName": "[variables('sbqQName')]"
                                 }
                             },
@@ -300,5 +274,31 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "registrationConnectionString": {
+            "type": "string",
+            "value": "[concat('HostName=', reference(variables('iotHubResourceId')).hostName, ';SharedAccessKeyName=', variables('iotHubKeyName'), ';SharedAccessKey=', listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey)]"
+        },
+        "documentDBHost": {
+            "type": "string",
+            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
+        },
+        "documentDBMasterKey": {
+            "type": "string",
+            "value": "[listkeys(variables('databaseAccountsName'), variables('docDbApiVersion')).primaryMasterKey]"
+        },
+        "sbusname": {
+            "type": "string",
+            "value": "[variables('sbqName')]"
+        },
+        "sbuskey": {
+            "type": "string",
+            "value": "[listkeys(variables('sbRuleResourceId'), variables('sbVersion')).primaryKey]"
+        },
+        "sbusqueuename": {
+            "type": "string",
+            "value": "[variables('sbqQName')]"
+        }
+    }
 }

@@ -125,75 +125,7 @@
             },
             "tags": {
                 "displayName": "IoTHub"
-            },
-            "resources": [
-                {
-                    "apiVersion": "[variables('iotHubVersion')]",
-                    "name": "[concat(variables('iotHubName'), '/events/', variables('saCGName'))]",
-                    "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
-                    "dependsOn": [
-                        "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
-                    ],
-                    "tags": {
-                        "displayName": "Stream Analytics Consumer Group"
-                    }
-                }
-            ]
-        },
-        {
-            "apiVersion": "[variables('sbVersion')]",
-            "name": "[variables('sbName')]",
-            "type": "Microsoft.Eventhub/namespaces",
-            "location": "[variables('location')]",
-            "properties": {
-                "messagingSku": "[variables('sbSku')]",
-                "region": "[variables('location')]"
-            },
-            "tags": {
-                "displayName": "Service Bus"
-            },
-            "resources": [
-                {
-                    "apiVersion": "[variables('sbVersion')]",
-                    "name": "[variables('ehOutName')]",
-                    "type": "eventHubs",
-                    "location": "[variables('location')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]"
-                    ],
-                    "properties": {
-                        "path": "[variables('ehOutName')]",
-                        "MessageRetentionInDays": 1
-                    },
-                    "tags": {
-                        "displayName": "Alerts Event Hub"
-                    },
-                    "resources": [
-                        {
-                            "apiVersion": "[variables('sbVersion')]",
-                            "name": "[variables('websiteCGName')]",
-                            "type": "ConsumerGroups",
-                            "dependsOn": [
-                                "[variables('ehOutName')]"
-                            ],
-                            "tags": {
-                                "displayName": "Website Consumer Group"
-                            }
-                        },
-                        {
-                            "apiVersion": "[variables('sbVersion')]",
-                            "name": "debug",
-                            "type": "ConsumerGroups",
-                            "dependsOn": [
-                                "[variables('ehOutName')]"
-                            ],
-                            "tags": {
-                                "displayName": "Debug Consumer Group"
-                            }
-                        }
-                    ]
-                }
-            ]
+            }
         },
         {
             "apiVersion": "[variables('saVersion')]",
@@ -202,7 +134,6 @@
             "location": "[variables('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]",
-                "[concat('Microsoft.Eventhub/namespaces/', variables('sbName'))]",
                 "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
             ],
             "tags": {
