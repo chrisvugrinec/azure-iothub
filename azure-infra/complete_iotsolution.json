@@ -29,7 +29,7 @@
         "sbVersion": "2015-08-01",
         "sbQueuePolicyName": "sbqueuePolicy",
         "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
-        "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), 'RootManageSharedAccessKey')]",
+        "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('sbqName'), 'RootManageSharedAccessKey')]",
         "ehOutName": "ehalerts",
         "sbSku": 1,
         "sbName": "[concat(parameters('solutionName'),'sb')]",
