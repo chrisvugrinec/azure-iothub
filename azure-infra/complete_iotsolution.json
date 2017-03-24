@@ -30,27 +30,19 @@
         "sbQueuePolicyName": "sbqueuePolicy",
         "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
         "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('sbqName'), 'RootManageSharedAccessKey')]",
-        "ehOutName": "ehalerts",
-        "sbSku": 1,
         "sbName": "[concat(parameters('solutionName'),'sb')]",
         "sbqName": "[concat(parameters('solutionName'),'sbq')]",
-        "sbqQName": "papayaqueue",
+        "sbqQName": "iotdemoqueue",
+        "sbSku": 1,
         "saVersion": "2015-10-01",
         "saName": "[concat(parameters('solutionName'), 'stream')]",
-        "webVersion": "2015-04-01",
-        "webPlanName": "[concat(parameters('solutionName'), 'plan')]",
-        "webSiteName": "[parameters('solutionName')]",
         "iotHubVersion": "2016-02-03",
         "iotHubTier": "Standard",
         "iotHubName": "[concat(parameters('solutionName'), 'hub')]",
         "iotHubKeyName": "iothubowner",
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
         "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
-        "saCGName": "streamanalyticscg",
-        "websiteCGName": "websitecg",
-        "webSku": "Standard",
-        "webWorkerCount": 2,
-        "webWorkerSize": 0
+        "iotConsGroup": "iotdemocg"
     },
     "resources": [
         {
@@ -153,7 +145,7 @@
                         "Properties": {
                             "DataSource": {
                                 "Properties": {
-                                    "consumerGroupName": "[variables('saCGName')]",
+                                    "consumerGroupName": "[variables('iotConsGroup')]",
                                     "iotHubNamespace": "[variables('iotHubName')]",
                                     "sharedAccessPolicyKey": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]",
                                     "sharedAccessPolicyName": "[variables('iotHubKeyName')]"
