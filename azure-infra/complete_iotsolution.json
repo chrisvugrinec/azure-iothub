@@ -69,6 +69,7 @@
             "name": "papaya-functions",
             "location": "[variables('location')]",
             "type": "Microsoft.Web/sites",
+            "kind": "functionapp",
             "properties": {
                "mode": "Incremental",
                "templateLink": {
