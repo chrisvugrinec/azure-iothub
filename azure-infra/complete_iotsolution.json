@@ -41,7 +41,9 @@
         "iotHubKeyName": "iothubowner",
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
         "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
-        "iotConsGroupName": "iotdemocg"
+        "iotConsGroupName": "iotdemocg",
+        "funcApiVersion": "2015-08-01",
+        "funcRepoUrl": "https://raw.githubusercontent.com/chrisvugrinec/azure-functions/master/"
     },
     "resources": [
         {
@@ -61,6 +63,19 @@
                 "name": "[variables('docDbName')]"
             },
             "dependsOn": []
+        },
+        {
+            "apiVersion": "[variables('funcApiVersion')]",
+            "name": "papaya-functions",
+            "location": "[variables('location')]",
+            "type": "Microsoft.Web/sites",
+            "properties": {
+               "mode": "Incremental",
+               "templateLink": {
+               "uri": "[concat(variables('funcRepoUrl'), '/az-function.json')]",
+               "contentVersion": "1.0.0.0"
+            }
+          }
         },
         {
             "apiVersion": "[variables('sbVersion')]",
