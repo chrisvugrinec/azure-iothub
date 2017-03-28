@@ -48,8 +48,8 @@
     "resources": [
         {
             "type": "Microsoft.Web/sourcecontrols/Bitbucket",
+            "name": "bitbucket2",
             "properties":{
-                "name":"bitbucket2",
                 "token":"hellowrold",
                 "tokenSecret":"supersecret"
             }
