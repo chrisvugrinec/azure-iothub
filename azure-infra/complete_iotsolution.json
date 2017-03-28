@@ -49,6 +49,7 @@
         {
             "type": "Microsoft.Web/sourcecontrols/Bitbucket",
             "name": "bitbucket2",
+            "api-version": "2015-08-01",
             "properties":{
                 "token":"hellowrold",
                 "tokenSecret":"supersecret"
