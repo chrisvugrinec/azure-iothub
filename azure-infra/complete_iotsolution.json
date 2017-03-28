@@ -43,7 +43,7 @@
         "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
         "iotConsGroupName": "iotdemocg",
         "funcApiVersion": "2015-08-01",
-        "funcRepoUrl": "https://raw.githubusercontent.com/chrisvugrinec/azure-functions/master/"
+        "funcRepoUrl": "https://cvugrinec@bitbucket.org/cvugrinec/papaya-az-function.git"
     },
     "resources": [
         {
