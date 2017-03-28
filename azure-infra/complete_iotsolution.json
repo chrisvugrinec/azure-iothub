@@ -42,9 +42,13 @@
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
         "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
         "iotConsGroupName": "iotdemocg",
-        "funcName": "[concat(parameters('solutionName'),'functions')]",
+        "funcName": "[concat(parameters('solutionName'),'funct')]",
         "funcApiVersion": "2015-08-01",
-        "funcRepoUrl": "https://cvugrinec@bitbucket.org/cvugrinec/papaya-az-function.git"
+        "funcStorageAccountName": "[concat(parameters('solutionName'),'funct','sa')]",
+        "funcHostingPlanName": "[concat(parameters('solutionName'), '-funct-plan')]",
+        "funcStorageAccountType": "Standard_LRS",
+        "funcSku":"Standard",
+        "funcWorkerSize":"0"
     },
     "resources": [
         {
@@ -64,22 +68,61 @@
                 "name": "[variables('docDbName')]"
             },
             "dependsOn": []
-        },
-        {
-            "apiVersion": "[variables('funcApiVersion')]",
-            "name": "[variables('funcName')]",
-            "location": "[variables('location')]",
-            "type": "Microsoft.Web/sites",
-            "kind": "functionapp",
+        },{
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('funcStorageAccountName')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('funcRepoUrl'), '/az-function.json')]",
-                    "contentVersion": "1.0.0.0"
-                }
+                "accountType": "[variables('funcStorageAccountType')]"
             }
-        },
-        {
+        },{
+                "type": "Microsoft.Web/serverfarms",
+                "apiVersion": "2015-04-01",
+                "name": "[variables('funcHostingPlanName')]",
+                "location": "[variables('location')]",
+                "properties": {
+                        "name": "[variables('funcHostingPlanName')]",
+                        "sku": "[variables('funcSku')]",
+                        "workerSize": "[variables('funcWorkerSize')]",
+                        "hostingEnvironment": "",
+                        "numberOfWorkers": 1
+                }
+        },{
+                "apiVersion": "[variables('funcApiVersion')]",
+                "type": "Microsoft.Web/sites",
+                "name": "[variables('funcName')]",
+                "location": "[variables('location')]",
+                "kind": "functionapp",
+                "properties": {
+                        "name": "[variables('funcName')]",
+                        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('funcHostingPlanName'))]",
+                        "hostingEnvironment": "",
+                        "clientAffinityEnabled": false,
+                        "siteConfig": {
+                                "alwaysOn": true,
+                                "cors": {
+                                        "allowedOrigins": [
+                                                "*"
+                                        ]
+                                },
+                                "appSettings": [{
+                                        "name": "FUNCTIONS_EXTENSION_VERSION",
+                                        "value": "~1"
+                                }, {
+                                        "name": "AzureWebJobsStorage",
+                                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('funcStorageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1,';')]"
+                                }, {
+                                        "name": "AzureWebJobsDashboard",
+                                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('funcStorageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-05-01-preview').key1,';')]"
+                                }]
+                        }
+                },
+                "dependsOn": [
+                        "[resourceId('Microsoft.Web/serverfarms', variables('funcHostingPlanName'))]",
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName'))]"
+                ]
+        },{
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbName')]",
             "type": "Microsoft.ServiceBus/namespaces",
