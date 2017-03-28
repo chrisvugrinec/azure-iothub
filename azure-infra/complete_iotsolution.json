@@ -47,10 +47,11 @@
     },
     "resources": [
         {
-            "type": "Microsoft.Web/sourcecontrols/Bitbucket",
-            "name": "bitbucket2",
-            "api-version": "2015-08-01",
+            "type": "Microsoft.Web/sourcecontrols",
+            "name": "Bitbucket",
+            "apiVersion": "2015-08-01",
             "properties":{
+                "name": "Bitbucket",
                 "token":"hellowrold",
                 "tokenSecret":"supersecret"
             }
