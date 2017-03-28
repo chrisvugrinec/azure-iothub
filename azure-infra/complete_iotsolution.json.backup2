@@ -24,40 +24,39 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
+        "databaseAccountsName": "[concat(parameters('solutionName'),'db')]",
         "docDbApiVersion": "2015-04-08",
-        "docDbName": "[concat(parameters('solutionName'),'db')]",
         "sbVersion": "2015-08-01",
-        "sbName": "[concat(parameters('solutionName'),'sb')]",
-        "sbQName": "iotdemoqueue",
         "sbQueuePolicyName": "sbqueuePolicy",
-        "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbName'), variables('sbQName'), variables('sbQueuePolicyName'))]",
-        "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('sbName'), 'RootManageSharedAccessKey')]",
+        "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]",
+        "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('sbqName'), 'RootManageSharedAccessKey')]",
+        "ehOutName": "ehalerts",
         "sbSku": 1,
+        "sbName": "[concat(parameters('solutionName'),'sb')]",
+        "sbqName": "[concat(parameters('solutionName'),'sbq')]",
+        "sbqQName": "papayaqueue",
         "saVersion": "2015-10-01",
         "saName": "[concat(parameters('solutionName'), 'stream')]",
+        "webVersion": "2015-04-01",
+        "webPlanName": "[concat(parameters('solutionName'), 'plan')]",
+        "webSiteName": "[parameters('solutionName')]",
         "iotHubVersion": "2016-02-03",
         "iotHubTier": "Standard",
         "iotHubName": "[concat(parameters('solutionName'), 'hub')]",
         "iotHubKeyName": "iothubowner",
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
         "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
-        "iotConsGroupName": "iotdemocg",
-        "funcApiVersion": "2015-08-01",
-        "funcRepoUrl": "https://raw.githubusercontent.com/chrisvugrinec/azure-functions/master/"
+        "saCGName": "streamanalyticscg",
+        "websiteCGName": "websitecg",
+        "webSku": "Standard",
+        "webWorkerCount": 2,
+        "webWorkerSize": 0
     },
     "resources": [
         {
-            "type": "Microsoft.Web/sourcecontrols/Bitbucket",
-            "properties":{
-                "name":"bitbucket2",
-                "token":"hellowrold",
-                "tokenSecret":"supersecret"
-            }
-        },
-        {
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "kind": "GlobalDocumentDB",
-            "name": "[variables('docDbName')]",
+            "name": "[variables('databaseAccountsName')]",
             "apiVersion": "[variables('docDbApiVersion')]",
             "location": "[variables('location')]",
             "tags": {},
@@ -68,27 +67,13 @@
                     "maxIntervalInSeconds": 5,
                     "maxStalenessPrefix": 100
                 },
-                "name": "[variables('docDbName')]"
+                "name": "[variables('databaseAccountsName')]"
             },
             "dependsOn": []
         },
         {
-            "apiVersion": "[variables('funcApiVersion')]",
-            "name": "papaya-functions",
-            "location": "[variables('location')]",
-            "type": "Microsoft.Web/sites",
-            "kind": "functionapp",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('funcRepoUrl'), '/az-function.json')]",
-                    "contentVersion": "1.0.0.0"
-                }
-            }
-        },
-        {
             "apiVersion": "[variables('sbVersion')]",
-            "name": "[variables('sbName')]",
+            "name": "[variables('sbqName')]",
             "type": "Microsoft.ServiceBus/namespaces",
             "location": "[variables('location')]",
             "sku": {
@@ -98,13 +83,13 @@
             "resources": [
                 {
                     "apiVersion": "[variables('sbVersion')]",
-                    "name": "[variables('sbQName')]",
+                    "name": "[variables('sbqQName')]",
                     "type": "Queues",
                     "dependsOn": [
-                        "[concat('Microsoft.ServiceBus/namespaces/', variables('sbName'))]"
+                        "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
                     ],
                     "properties": {
-                        "path": "[variables('sbQName')]"
+                        "path": "[variables('sbqQName')]"
                     },
                     "resources": [
                         {
@@ -112,7 +97,7 @@
                             "name": "[variables('sbQueuePolicyName')]",
                             "type": "authorizationRules",
                             "dependsOn": [
-                                "[variables('sbQName')]"
+                                "[variables('sbqQName')]"
                             ],
                             "properties": {
                                 "Rights": [
@@ -144,7 +129,7 @@
             "resources": [
                 {
                     "apiVersion": "[variables('iotHubVersion')]",
-                    "name": "[concat(variables('iotHubName'), '/events/', variables('iotConsGroupName'))]",
+                    "name": "[concat(variables('iotHubName'), '/events/', variables('saCGName'))]",
                     "type": "Microsoft.Devices/Iothubs/eventhubEndpoints/ConsumerGroups",
                     "dependsOn": [
                         "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]"
@@ -162,7 +147,7 @@
             "location": "[variables('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Devices/Iothubs/', variables('iotHubName'))]",
-                "[concat('Microsoft.ServiceBus/namespaces/', variables('sbName'))]"
+                "[concat('Microsoft.ServiceBus/namespaces/', variables('sbqName'))]"
             ],
             "tags": {
                 "displayName": "Stream Analytics Job"
@@ -181,7 +166,7 @@
                         "Properties": {
                             "DataSource": {
                                 "Properties": {
-                                    "consumerGroupName": "[variables('iotConsGroupName')]",
+                                    "consumerGroupName": "[variables('saCGName')]",
                                     "iotHubNamespace": "[variables('iotHubName')]",
                                     "sharedAccessPolicyKey": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]",
                                     "sharedAccessPolicyName": "[variables('iotHubKeyName')]"
@@ -202,16 +187,16 @@
                     {
                         "Name": "iot-output",
                         "dependsOn": [
-                            "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbName'), variables('sbQName'), variables('sbQueuePolicyName'))]"
+                            "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbqName'), variables('sbqQName'), variables('sbQueuePolicyName'))]"
                         ],
                         "Properties": {
                             "DataSource": {
                                 "type": "Microsoft.ServiceBus/Queue",
                                 "properties": {
-                                    "serviceBusNamespace": "[variables('sbName')]",
+                                    "serviceBusNamespace": "[variables('sbqName')]",
                                     "sharedAccessPolicyName": "[variables('sbQueuePolicyName')]",
                                     "sharedAccessPolicyKey": "[listkeys(variables('sbQueueRuleResourceId'), variables('sbVersion')).primaryKey]",
-                                    "queueName": "[variables('sbQName')]"
+                                    "queueName": "[variables('sbqQName')]"
                                 }
                             },
                             "Serialization": {
@@ -245,11 +230,11 @@
         },
         "documentDBMasterKey": {
             "type": "string",
-            "value": "[listkeys(variables('docDbName'), variables('docDbApiVersion')).primaryMasterKey]"
+            "value": "[listkeys(variables('databaseAccountsName'), variables('docDbApiVersion')).primaryMasterKey]"
         },
         "sbusname": {
             "type": "string",
-            "value": "[variables('sbName')]"
+            "value": "[variables('sbqName')]"
         },
         "sbuskey": {
             "type": "string",
@@ -257,7 +242,7 @@
         },
         "sbusqueuename": {
             "type": "string",
-            "value": "[variables('sbQName')]"
+            "value": "[variables('sbqQName')]"
         }
     }
 }
