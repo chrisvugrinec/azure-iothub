@@ -42,6 +42,7 @@
         "iotHubKeyResource": "[resourceId('Microsoft.Devices/Iothubs/Iothubkeys', variables('iotHubName'), variables('iotHubKeyName'))]",
         "iotHubResourceId": "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
         "iotConsGroupName": "iotdemocg",
+        "funcName": "[concat(parameters('solutionName'),'functions')]",
         "funcApiVersion": "2015-08-01",
         "funcRepoUrl": "https://cvugrinec@bitbucket.org/cvugrinec/papaya-az-function.git"
     },
@@ -66,7 +67,7 @@
         },
         {
             "apiVersion": "[variables('funcApiVersion')]",
-            "name": "papaya-functions",
+            "name": "[variables('funcName')]",
             "location": "[variables('location')]",
             "type": "Microsoft.Web/sites",
             "kind": "functionapp",
