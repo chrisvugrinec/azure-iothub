@@ -122,28 +122,28 @@
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('funcStorageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName')), '2015-05-01-preview').key1,';')]"
                         },
                         {
-                            "name": "muekensb",
-                            "value":"[variables('sbQName')]"
+                            "name": "papaySb",
+                            "value": "[listkeys(variables('sbRuleResourceId'), variables('sbVersion')).primaryConnectionString]"
                         },
                         {
-                            "name": "docDBHost",
-                            "value":"[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"                            
+                            "name": "papayaDb",
+                            "value": "[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"
                         },
                         {
-                            "name": "docDBKey",
-                            "value":"[listkeys(variables('docDbName'), variables('docDbApiVersion')).primaryMasterKey]"                            
+                            "name": "papapyaDbKey",
+                            "value": "[listkeys(variables('docDbName'), variables('docDbApiVersion')).primaryMasterKey]"
                         },
                         {
-                            "name": "iotHost",
-                            "value":"[reference(variables('iotHubResourceId')).hostName]"                            
+                            "name": "papayaIotHost",
+                            "value": "[reference(variables('iotHubResourceId')).hostName]"
                         },
                         {
-                            "name": "iotKeyName",
-                            "value":"[variables('iotHubKeyName')]"                            
+                            "name": "papayaIotKeyName",
+                            "value": "[variables('iotHubKeyName')]"
                         },
                         {
-                            "name": "iotKey",
-                            "value":"[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]"                            
+                            "name": "papayaIotKey",
+                            "value": "[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]"
                         }
                     ]
                 }
@@ -151,12 +151,13 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('funcHostingPlanName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName'))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('docDbName'))]",                
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('docDbName'))]",
                 "[resourceId('Microsoft.ServiceBus/namespaces', variables('sbName'))]",
                 "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
                 "[resourceId('Microsoft.StreamAnalytics/streamingjobs', variables('saName'))]"
             ]
-        },{
+        },
+        {
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbName')]",
             "type": "Microsoft.ServiceBus/namespaces",
