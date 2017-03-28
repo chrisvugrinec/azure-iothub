@@ -32,7 +32,6 @@
         "sbQueuePolicyName": "sbqueuePolicy",
         "sbQueueRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', variables('sbName'), variables('sbQName'), variables('sbQueuePolicyName'))]",
         "sbRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('sbName'), 'RootManageSharedAccessKey')]",
-        "sbSku": 1,
         "saVersion": "2015-10-01",
         "saName": "[concat(parameters('solutionName'), 'stream')]",
         "iotHubVersion": "2016-02-03",
@@ -47,8 +46,8 @@
         "funcStorageAccountName": "[concat(parameters('solutionName'),'funct','sa')]",
         "funcHostingPlanName": "[concat(parameters('solutionName'), '-funct-plan')]",
         "funcStorageAccountType": "Standard_LRS",
-        "funcSku":"Standard",
-        "funcWorkerSize":"0"
+        "funcSku": "Standard",
+        "funcWorkerSize": "0"
     },
     "resources": [
         {
@@ -68,7 +67,8 @@
                 "name": "[variables('docDbName')]"
             },
             "dependsOn": []
-        },{
+        },
+        {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('funcStorageAccountName')]",
             "apiVersion": "2015-06-15",
@@ -76,52 +76,86 @@
             "properties": {
                 "accountType": "[variables('funcStorageAccountType')]"
             }
-        },{
-                "type": "Microsoft.Web/serverfarms",
-                "apiVersion": "2015-04-01",
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2015-04-01",
+            "name": "[variables('funcHostingPlanName')]",
+            "location": "[variables('location')]",
+            "properties": {
                 "name": "[variables('funcHostingPlanName')]",
-                "location": "[variables('location')]",
-                "properties": {
-                        "name": "[variables('funcHostingPlanName')]",
-                        "sku": "[variables('funcSku')]",
-                        "workerSize": "[variables('funcWorkerSize')]",
-                        "hostingEnvironment": "",
-                        "numberOfWorkers": 1
-                }
-        },{
-                "apiVersion": "[variables('funcApiVersion')]",
-                "type": "Microsoft.Web/sites",
+                "sku": "[variables('funcSku')]",
+                "workerSize": "[variables('funcWorkerSize')]",
+                "hostingEnvironment": "",
+                "numberOfWorkers": 1
+            }
+        },
+        {
+            "apiVersion": "[variables('funcApiVersion')]",
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('funcName')]",
+            "location": "[variables('location')]",
+            "kind": "functionapp",
+            "properties": {
                 "name": "[variables('funcName')]",
-                "location": "[variables('location')]",
-                "kind": "functionapp",
-                "properties": {
-                        "name": "[variables('funcName')]",
-                        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('funcHostingPlanName'))]",
-                        "hostingEnvironment": "",
-                        "clientAffinityEnabled": false,
-                        "siteConfig": {
-                                "alwaysOn": true,
-                                "cors": {
-                                        "allowedOrigins": [
-                                                "*"
-                                        ]
-                                },
-                                "appSettings": [{
-                                        "name": "FUNCTIONS_EXTENSION_VERSION",
-                                        "value": "~1"
-                                }, {
-                                        "name": "AzureWebJobsStorage",
-                                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('funcStorageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName')), '2015-05-01-preview').key1,';')]"
-                                }, {
-                                        "name": "AzureWebJobsDashboard",
-                                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('funcStorageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName')), '2015-05-01-preview').key1,';')]"
-                                }]
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('funcHostingPlanName'))]",
+                "hostingEnvironment": "",
+                "clientAffinityEnabled": false,
+                "siteConfig": {
+                    "alwaysOn": true,
+                    "cors": {
+                        "allowedOrigins": [
+                            "*"
+                        ]
+                    },
+                    "appSettings": [
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~1"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('funcStorageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName')), '2015-05-01-preview').key1,';')]"
+                        },
+                        {
+                            "name": "AzureWebJobsDashboard",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('funcStorageAccountName'),';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName')), '2015-05-01-preview').key1,';')]"
+                        },
+                        {
+                            "name": "muekensb",
+                            "value":"[variables('sbQName')]"
+                        },
+                        {
+                            "name": "docDBHost",
+                            "value":"[concat('https://',parameters('solutionName'),'db','.documents.azure.com:443/')]"                            
+                        },
+                        {
+                            "name": "docDBKey",
+                            "value":"[listkeys(variables('docDbName'), variables('docDbApiVersion')).primaryMasterKey]"                            
+                        },
+                        {
+                            "name": "iotHost",
+                            "value":"[reference(variables('iotHubResourceId')).hostName]"                            
+                        },
+                        {
+                            "name": "iotKeyName",
+                            "value":"[variables('iotHubKeyName')]"                            
+                        },
+                        {
+                            "name": "iotKey",
+                            "value":"[listkeys(variables('iotHubKeyResource'), variables('iotHubVersion')).primaryKey]"                            
                         }
-                },
-                "dependsOn": [
-                        "[resourceId('Microsoft.Web/serverfarms', variables('funcHostingPlanName'))]",
-                        "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName'))]"
-                ]
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('funcHostingPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('funcStorageAccountName'))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('docDbName'))]",                
+                "[resourceId('Microsoft.ServiceBus/namespaces', variables('sbName'))]",
+                "[resourceId('Microsoft.Devices/Iothubs', variables('iotHubName'))]",
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', variables('saName'))]"
+            ]
         },{
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbName')]",
