@@ -47,16 +47,6 @@
     },
     "resources": [
         {
-            "type": "Microsoft.Web/sourcecontrols",
-            "name": "Bitbucket",
-            "apiVersion": "2015-08-01",
-            "properties":{
-                "name": "Bitbucket",
-                "token":"hellowrold",
-                "tokenSecret":"supersecret"
-            }
-        },
-        {
             "type": "Microsoft.DocumentDB/databaseAccounts",
             "kind": "GlobalDocumentDB",
             "name": "[variables('docDbName')]",
